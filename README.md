@@ -30,6 +30,6 @@ If the program is well made, you shouldn't encounter them, however in case you d
 An error code is a three letter number XYZ. the X number identifies which source file the error comes from and the YZ identifies the type of error in this file.
 
 Here's a table of all the file identifiers:
-|    0XX    |     1XX    | 2XX | 3XX | 4XX | 5XX | 6XX | 7XX | 8XX | 9XX |
-|:---------:|:----------:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-|   main.c  |   queue.c  |     |     |     |     |     |     |     |     | 
+|    0XX    |     1XX    |     2XX    | 3XX | 4XX | 5XX | 6XX | 7XX | 8XX | 9XX |
+|:---------:|:----------:|:----------:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|   main.c  |   queue.c  |   stack.c  |     |     |     |     |     |     |     | 

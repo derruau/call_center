@@ -1,9 +1,9 @@
 #include <stdlib.h> 
 #include <stdbool.h>
 
-#define STACK_OVERFLOW 100
-#define STACK_UNDERFLOW 101
-#define STACK_IS_EMPTY 102
+#define STACK_OVERFLOW 200
+#define STACK_UNDERFLOW 201
+#define STACK_IS_EMPTY 202
 
 typedef struct stack {
     int size;
