@@ -8,7 +8,7 @@ typedef struct {
     char *tel;
 } Call;
 
-Call *create_random_call(int id) {
+Call *call_create_random(int id) {
     Call *c = malloc(sizeof(Call));
 
     char *tel = malloc(sizeof(char)*10);
@@ -25,11 +25,7 @@ Call *create_random_call(int id) {
     return c;
 }
 
-void free_call(Call *c) {
+void call_free(Call *c) {
     free(c->tel);
     free(c);
-}
-
-void print_call(Call *c) {
-    printf("{ call_id:%i, tel:%s }", c->id, c->tel);
 }

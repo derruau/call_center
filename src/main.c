@@ -1,11 +1,26 @@
 #include "../include/call.h"
+#include "../include/queue.h"
+#include "../include/helper.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 int main() {
-    Call *c = create_random_call(0);
+    Queue *q = queue_init(3);
 
-    print_call(c);
+    int v1 = 1;
+    int v2 = 2;
+    int v3 = 3;
+    int v4 = 4;
 
-    free_call(c);
+    queue_enqueue(q, &v1);
+    queue_enqueue(q, &v2);
+    queue_enqueue(q, &v3);
+    
+    queue_dequeue(q);
+    queue_dequeue(q);
+    queue_enqueue(q, &v4);
+
+    helper_print_int_queue(q);
+
+
 }
