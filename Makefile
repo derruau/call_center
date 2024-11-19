@@ -1,25 +1,45 @@
-# DOESN'T WORK FOR NOW
+TARGET_EXEC := queue_project
 
-CC=gcc
-RM=rm
+BUILD_DIR := ./build
+SRC_DIR := ./src
+HEADER_DIR := ./include
 
-SRC_PATH=src/
-BUILD_PATH=build/
-BIN_PATH=bin/
+# Recursively finds any C files in $(SRC_DIR) 
+SRCS := $(shell find $(SRC_DIR) -name '*.c')
 
-CFLAGS= -Wall
-LDFLAGS=
+# Every files in $(SRCS) but as object files with extension .c.o
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
-FILES=($wildcard $(SRC_PATH)*.c)
-OBJFILES=($wildcard $(BUILD_PATH)*.o)
-TARGET=call_center
+# Every files in $(OBJS) but as dependency files with extenion .c.d
+DEPS := $(OBJS:.o=.d)
 
-$(TARGET): $(OBJFILES)
-	$(CC) $(CFLAGS) -o $(BIN_PATH)$(TARGET) $(BUILD_PATH)$(OBJFILES) $(LDFLAGS)
+# Every folder in ./src will need to be passed to GCC so that it can find header files
+INC_DIRS := $(shell find $(HEADER_DIR) -type d)
+# Add a prefix to INC_DIRS. So moduleA would become -ImoduleA
+# This makes gcc aware that those folders contain header files
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-$(OBJFILES): $(FILES)
-	$(CC) $CFLAGS -c $(BUILD_PATH)$(OBJFILES) $(SRC_PATH)$(FILES) 
+# The -MMD and -MP flags together autogenerate Makefiles
+# These files will have .d instead of .o as the output.
+CPPFLAGS := $(INC_FLAGS) -MMD -MP
+
+# Final build step
+$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
+	@echo Linking...
+	@$(CXX) $(OBJS) -o $@ $(LDFLAGS)
+	@echo
+	@echo Build Complete!
+
+# Intermediate build step
+$(BUILD_DIR)/%.c.o: %.c
+	@mkdir -p $(dir $@)
+	@echo Assembling '$(shell basename -s .c.o $@)'...
+	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:
-	$(RM) build/*.o
+	@rm -r $(BUILD_DIR)
+	@echo Cleaned build directory!
+
+# Includes the .d makefiles
+-include $(DEPS)
