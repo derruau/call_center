@@ -16,7 +16,7 @@ Additionnaly, use ``make clean`` to make a clean build of the project in case so
 
 # Usage
 
-```bash
+```
 Simulation of a call center. (School project)
 
 Usage:
@@ -36,7 +36,7 @@ Options:
 
 Duration Format:
   The duration format encodes a start and end time like so:
-  [START_TIME]:[END_TIME]
+                [START_TIME]:[END_TIME]
   Each TIME parameter is written like so: [NUMBER][UNIT]
   Where:
     - NUMBER is a whole number
