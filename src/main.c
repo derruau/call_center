@@ -22,5 +22,8 @@ int main() {
 
     helper_print_int_queue(q);
 
+    helper_get_random_name_from_file("data/mock_client_names.csv");
+
+    //TODO: test functions in call.c
 
 }
