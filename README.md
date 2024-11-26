@@ -16,7 +16,35 @@ Additionnaly, use ``make clean`` to make a clean build of the project in case so
 
 # Usage
 
-TO BE DEFINED
+```bash
+Simulation of a call center. (School project)
+
+Usage:
+  - queue_project [options] <output-path>
+  - queue_project --help
+  - queue_project -l 2.6 -d 0s:30m -o 6 output.txt
+
+Options:
+  -h --help        Show this screen.
+  -v --version     Show version.
+  -l --lambda      Lambda parameter of a Poisson Law. [default: TODO]
+  -s --shift       The call centers shift opening and closing hours in 
+                   duration format (see bellow).
+  -d --duration    Minimum and Maximum call duration for a client in 
+                   duration format (see bellow).
+  -o --operators   Number of operators in the call center.
+
+Duration Format:
+  The duration format encodes a start and end time like so:
+  [START_TIME]:[END_TIME]
+  Each TIME parameter is written like so: [NUMBER][UNIT]
+  Where:
+    - NUMBER is a whole number
+    - UNIT is a unit of time (s: seconds, m: minutes, d: days)
+  Example: The Duration Format 2s:4d means that the minimum 
+           duration is 2 seconds and the maximum duration is 4 days.
+```
+
 
 # Conventions
 
