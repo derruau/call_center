@@ -25,14 +25,15 @@ Usage:
   - queue_project -l 2.6 -d 0s:30m -o 6 output.txt
 
 Options:
-  -h --help        Show this screen.
-  -v --version     Show version.
-  -l --lambda      Lambda parameter of a Poisson Law. [default: TODO]
-  -s --shift       The call centers shift opening and closing hours in 
-                   duration format (see bellow).
-  -d --duration    Minimum and Maximum call duration for a client in 
-                   duration format (see bellow).
-  -o --operators   Number of operators in the call center.
+  -h --help            Show this screen.
+  -v --version         Show version.
+  -l --lambda          Lambda parameter of a Poisson Law. [default: TODO]
+  -s --shift           The call centers shift opening and closing hours in 
+                       duration format (see bellow).
+  -d --duration        Minimum and Maximum call duration for a client in 
+                       duration format (see bellow).
+  -n --number-of-days  The number of days in the simulation [default: 1]
+  -o --operators       Number of operators in the call center.
 
 Duration Format:
   The duration format encodes a start and end time like so:
@@ -40,9 +41,10 @@ Duration Format:
   Each TIME parameter is written like so: [NUMBER][UNIT]
   Where:
     - NUMBER is a whole number
-    - UNIT is a unit of time (s: seconds, m: minutes, d: days)
-  Example: The Duration Format 2s:4d means that the minimum 
-           duration is 2 seconds and the maximum duration is 4 days.
+    - UNIT is a unit of time (s: seconds, m: minutes,, h:hours, d: days,
+     w: week, M: month, y: year)
+  Example: The Duration Format 2s:4d means that the minimum duration is 2
+           seconds and the maximum duration is 4 days.
 ```
 
 
@@ -58,6 +60,6 @@ If the program is well made, you shouldn't encounter them, however in case you d
 An error code is a three letter number XYZ. the X number identifies which source file the error comes from and the YZ identifies the type of error in this file.
 
 Here's a table of all the file identifiers:
-|    0XX    |     1XX    |     2XX    |    3XX   | 4XX | 5XX | 6XX | 7XX | 8XX | 9XX |
-|:---------:|:----------:|:----------:|:--------:|:---:|:---:|:---:|:---:|:---:|:---:|
-|   main.c  |   queue.c  |   stack.c  | helper.c |     |     |     |     |     |     | 
+|    0XX    |     1XX    |     2XX    |    3XX   |        4XX       | 5XX | 6XX | 7XX | 8XX | 9XX |
+|:---------:|:----------:|:----------:|:--------:|:----------------:|:---:|:---:|:---:|:---:|:---:|
+|   main.c  |   queue.c  |   stack.c  | helper.c | argument parsing |     |     |     |     |     | 
