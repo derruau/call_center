@@ -5,11 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "Debug Mode",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/queue_project",
-            "args": [],
+            "args": [
+                "125",
+                "457",
+                "1.2",
+                "1.54",
+                "fdkpsod dsd",
+                "jodfs",
+                "456",
+                "-a",
+                "--afdsfsa",
+                "4d:5s",
+                "2s:182M"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -22,7 +34,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build"
+            "preLaunchTask": "build debug"
         }
     ]
 }

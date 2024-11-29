@@ -14,6 +14,13 @@ make
 
 Additionnaly, use ``make clean`` to make a clean build of the project in case something's broken
 
+## Debug using VSCODE:
+To debug the program using VSCODE, use the built-in debugger:
+1. Go to the 'Run and Debug' section
+2. Select and run the 'Debug Mode' task
+
+If you want to debug the program using ``gdb``, just build it with ``make debug``.
+
 # Usage
 
 ```

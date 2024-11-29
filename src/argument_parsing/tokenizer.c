@@ -84,6 +84,7 @@ char *_tokenizer_get_substring_of(char *s, int start_pos) {
 
 void tokenizer_print_token(Token token) {
     if (token.type == FLAG) {
+        if (token.data.f == 0) return;
         printf("Token{ type: FLAG, name: %s}\n", (char*)token.data.f->name);
     } else if (token.type == VALUE)
     {
@@ -199,7 +200,6 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
         tokens[pos - 1].type = FLAG;
         tokens[pos - 1].data.f = ts;
 
-        printf("flag detected: %s\n", (char*)tokens[pos-1].data.f->name);
         return 1;
     }
 
@@ -213,7 +213,6 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
         tokens[pos - 1].type = VALUE;
         tokens[pos - 1].data.v = s;
 
-        printf("number detected: %i\n", *(int*)s->data);
         return 1;
     }
 
@@ -227,15 +226,12 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
         tokens[pos - 1].type = VALUE;
         tokens[pos - 1].data.v = s;
 
-        printf("float detected: %f\n", *(float*)s->data);
         return 1;
     }
 
     if (duration_result == 0) { //argv is a duration
-        _tokenizer_handle_duration(argv[pos], tokens, pos + 1);
+        _tokenizer_handle_duration(argv[pos], tokens, pos);
 
-        printf("duration detected: %s:%s\n", (char*)tokens[pos + 1].data.v->data, (char*)tokens[pos + 2].data.v->data);
-        printf("duration detected: %i\n", (int)tokens[pos + 1].type);
         return 2;
     }
 
@@ -247,7 +243,6 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
         tokens[pos - 1].type = VALUE;
         tokens[pos - 1].data.v = s;
 
-        printf("string detected: '%s'\n", (char*)s->data);
         return 1;
     }
 
@@ -273,13 +268,9 @@ int tokenizer_tokenize(int argc, char *argv[], Token *tokens) {
     }
 
     //truncate Tokens to it actual size
-    tokens = realloc(tokens,sizeof(Token)*(i-1));
+    tokens = realloc(tokens,sizeof(Token)*i);
     if (tokens == NULL) {
         return TOKENIZER_GENERAL_ERROR;
-    }
-
-    for (int j=0; j<(i-1); j++) {
-        if (tokens[j].type == 0 ) tokenizer_print_token(tokens[j]);
     }
 
     return 0;
