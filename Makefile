@@ -21,7 +21,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 # The -MMD and -MP flags together autogenerate Makefiles
 # These files will have .d instead of .o as the output.
-CPPFLAGS := $(INC_FLAGS) -MMD -MP
+CPPFLAGS := $(INC_FLAGS) -MMD -MP -ggdb
 
 # Final build step
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
