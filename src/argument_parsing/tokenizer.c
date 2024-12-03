@@ -8,6 +8,8 @@ Tokenizer:
 #include <stdio.h>
 #include <stdlib.h>
 #include <regex.h>
+#include "../../include/arg_types.h"
+
 
 #define TOKENIZER_GENERAL_ERROR 410
 #define REGEX_COMPILATION_ERROR 411
@@ -26,38 +28,6 @@ Tokenizer:
 #define DURATION_REGEX "^[0-9]+[smhdwMy]:[0-9]+[smhdwMy]$"
 #define STRING_REGEX "^(\\w| )+$"
 
-
-typedef enum _e_value_type {
-    INT = 0b00001,
-    FLOAT = 0b00010,
-    DURATION = 0b00100,
-    DURATION_UNIT = 0b01000,
-    STRING = 0b10000,
-} _value_type;
-
-typedef enum e_token_type {
-    FLAG,
-    VALUE
-} _token_type;
-
-struct _s_flag {
-    char *name;
-};
-
-struct _s_value {
-    void *data;
-    _value_type type;
-};
-
-typedef union _u_token {
-    struct _s_flag* f;
-    struct _s_value* v;
-} _token;
-
-typedef struct s_token {
-    _token_type type;
-    _token data;
-} Token;
 
 char *_tokenizer_get_substring_of(char *s, int start_pos) {
     char *result = malloc(sizeof(char)*20);

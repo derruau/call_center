@@ -17,41 +17,22 @@ Architecture:
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "../../include/tokenizer.h"
+#include <string.h>
+#include "../../include/arg_types.h"
+
 
 #define CANNOT_ADD_SYNTAX_ERROR 421
+#define FLAG_NOT_IN_SYNTAX 422
+#define BAD_SYNTAX_ERROR 423
 #define CANNOT_ADD_SYNTAX_ERROR_MESSAGE "[LEXER ERROR] - Cannot add another expression to the syntax!\n"
+#define FLAG_NOT_IN_SYNTAX_MESSAGE "[LEXER ERROR] - Flag is not in the syntax!\n"
+#define BAD_SYNTAX_ERROR_MESSAGE "[LEXER ERROR] - Syntax error!\n"
 
 #define SYNTAX_SIZE_INCREASE 5
 
 // Forward declarations 
 typedef struct s_arguments Arguments;
 struct s_tokens;
-
-typedef void (*lexer_callback)(struct s_arguments *a, struct s_tokens *t, int tokens_size); 
-
-typedef struct {
-    char abv;
-    int has_abv;
-    char *full_name;
-    
-    //Callback to when there is a match in tokens
-    lexer_callback cb;
-
-    // Number of value tokens after the flag
-    int param_number;
-    // Type of each Value Parameter. A parameter can be of multiple types,
-    // so each int is the Bitwise-OR of all the types he can be
-    // For example: if the parameter can be a FLOAT or an INT the Value will be
-    // equal to FLOAT | INT
-    int param_type[];
-} Expression;
-
-typedef struct {
-    int max_size;
-    int current_size;
-    Expression **s;
-} Syntax;
 
 Syntax *lexer_init_syntax() {
     Syntax *s = malloc(sizeof(Syntax));
@@ -62,7 +43,7 @@ Syntax *lexer_init_syntax() {
     return s;
 }
 
-Expression *lexer_init_expression(char *full_name, char abv, int param_number, int param_type[]) {
+Expression *lexer_init_expression(char *full_name, char abv, int param_number, int param_type[], lexer_callback cb) {
     Expression *e = malloc(sizeof(Expression) + param_number*sizeof(Expression));
 
     e->full_name = full_name;
@@ -73,6 +54,8 @@ Expression *lexer_init_expression(char *full_name, char abv, int param_number, i
     for (int i=0; i < param_number; i++) {
         e->param_type[i] = param_type[i];
     }
+
+    e->cb = cb;
 
     return e;
 }
@@ -96,8 +79,47 @@ int lexer_add_expression_to_syntax(Syntax *syntax, Expression *expression ) {
 
 }
 
+
+
+Expression *_lexer_get_expression_from_flag_name(Syntax *syntax, char* name) {
+    for (int i=0; i<syntax->current_size; i++) {
+        if (strcmp(syntax->s[i]->full_name, name) == 0) {
+            return syntax->s[i];
+        }
+    }
+    printf(FLAG_NOT_IN_SYNTAX_MESSAGE);
+    exit(FLAG_NOT_IN_SYNTAX);
+}
+
 int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int tokens_size) {
-    // Modifier le tokenizer pour qu'il renvoie le nombre de tokens + le passer en argument de cette fct
-    // Aussi tester le code ça pourrait être bien...
+    // If returns anything other than 0, it failed!
+
+
+    int i=0;
+    while (i < tokens_size) {
+        if (tokens[i].type == FLAG) {
+            Expression *e = _lexer_get_expression_from_flag_name(syntax, tokens[i].data.f->name);
+            // RAJOUTER LE CALLBACK DANS lexer_init_expression!!
+            // Aussi la définition du callback est nulle, ce serait mieux de renvoyer directement 
+            // un pointeur vers les tokens des arguments correspondants!!
+            Token **relevant_tokens = malloc(sizeof(Token*)*e->param_number);
+
+            for (int i=0; i<e->param_number; i++) {
+                if (i + 1 >= tokens_size || tokens[i + 1].type != VALUE)  {
+                    printf(BAD_SYNTAX_ERROR_MESSAGE);
+                    exit(BAD_SYNTAX_ERROR);
+                }
+                // If the token has a valid data type 
+                if (e->param_type[0] & tokens[i + 1].data.v->type != 0) {
+                    relevant_tokens[i] = &tokens[i];
+                }
+            }
+
+            // Calling the callback
+            e->cb(arguments, relevant_tokens);
+        }
+
+        i++;
+    }
 }
 

@@ -13,6 +13,8 @@ a little more interesting.
 #include <stdio.h>
 #include "../../include/tokenizer.h"
 #include "../../include/lexer.h"
+#include "../../include/callbacks.h"
+#include "../../include/arg_types.h"
 
 #define TOKENIZER_ERROR 401
 #define LEXER_ERROR 402
@@ -27,23 +29,6 @@ a little more interesting.
 #define SHIFT_OPENING_DEFAULT 155
 #define SHIFT_CLOSING_DEFAULT 4666
 #define PATH_DEFAULT "output.txt"
-
-typedef struct s_arguments{
-    int help;
-    int version;
-    float lambda;
-    float operators;
-
-    // Corresponds to the -d argument
-    time_t minsrv;
-    time_t maxsrv;
-
-    // Corresponds to the -s argument
-    time_t shift_opening;
-    time_t shift_closing;
-
-    char *path;
-} Arguments;
 
 Arguments *args_create_arguments() {
     Arguments *a = malloc(sizeof(Arguments));
@@ -65,30 +50,30 @@ Syntax* _args_create_syntax() {
 
     Syntax *syntax = lexer_init_syntax();
     
-    Expression *help = lexer_init_expression("help", 'h', 0, NULL);
+    Expression *help = lexer_init_expression("help", 'h', 0, NULL, &cb_help);
     lexer_add_expression_to_syntax(syntax, help);
 
-    Expression *version = lexer_init_expression("version", 'v', 0, NULL);
+    Expression *version = lexer_init_expression("version", 'v', 0, NULL, &cb_version);
     lexer_add_expression_to_syntax(syntax, version);
 
     int lambda_types[] = {INT | FLOAT};
-    Expression *lambda = lexer_init_expression("lambda", 'l', 1, lambda_types);
+    Expression *lambda = lexer_init_expression("lambda", 'l', 1, lambda_types, &cb_lambda);
     lexer_add_expression_to_syntax(syntax, lambda);
 
     int shift_types[] = {DURATION_UNIT, DURATION_UNIT};
-    Expression *shift = lexer_init_expression("shift", 's', 2, shift_types);
-    lexer_add_expression_to_syntax(syntax, lambda);
+    Expression *shift = lexer_init_expression("shift", 's', 2, shift_types, &cb_shift);
+    lexer_add_expression_to_syntax(syntax, shift);
 
     int duration_types[] = {DURATION_UNIT, DURATION_UNIT};
-    Expression *duration = lexer_init_expression("duration", 'd', 2, duration_types);
+    Expression *duration = lexer_init_expression("duration", 'd', 2, duration_types, &cb_duration);
     lexer_add_expression_to_syntax(syntax, duration);
 
     int number_of_days_types[] = {INT};
-    Expression *number_of_days = lexer_init_expression("number-of-days", 'n', 1, number_of_days_types);
+    Expression *number_of_days = lexer_init_expression("number-of-days", 'n', 1, number_of_days_types, &cb_number_of_days);
     lexer_add_expression_to_syntax(syntax, number_of_days);
 
     int operators_types[] = {INT};
-    Expression *operators =lexer_init_expression("operators", 'o', 1, operators_types);
+    Expression *operators =lexer_init_expression("operators", 'o', 1, operators_types, &cb_operators);
     lexer_add_expression_to_syntax(syntax, operators);
 
     return syntax;
