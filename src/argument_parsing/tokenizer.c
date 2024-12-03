@@ -15,7 +15,7 @@ Tokenizer:
 #define CANT_TOKENIZE_DURATION_UNIT 413
 #define BAD_TOKEN_TYPE 414
 #define REGEX_COMPILATION_ERROR_MESSAGE "[TOKENIZER ERROR] - Could not compile argument parsing regex!\n"
-#define BAD_TOKEN_ERROR_MESSAGE "[USER ERROR] - Bad argument syntax!\n"
+#define BAD_TOKEN_ERROR_MESSAGE "[USER ERROR] - Bad arguments!\n"
 #define CANT_TOKENIZE_DURATION_UNIT_MESSAGE "[TOKENIZER ERROR] - Could not tokenize a duration!\n"
 #define BAD_TOKEN_TYPE_MESSAGE "[TOKENIZER ERROR] - Token type not recognised!"
 
@@ -28,11 +28,11 @@ Tokenizer:
 
 
 typedef enum _e_value_type {
-    INT,
-    FLOAT,
-    DURATION,
-    DURATION_UNIT,
-    STRING,
+    INT = 0b00001,
+    FLOAT = 0b00010,
+    DURATION = 0b00100,
+    DURATION_UNIT = 0b01000,
+    STRING = 0b10000,
 } _value_type;
 
 typedef enum e_token_type {
@@ -58,7 +58,6 @@ typedef struct s_token {
     _token_type type;
     _token data;
 } Token;
-
 
 char *_tokenizer_get_substring_of(char *s, int start_pos) {
     char *result = malloc(sizeof(char)*20);
@@ -273,5 +272,5 @@ int tokenizer_tokenize(int argc, char *argv[], Token *tokens) {
         return TOKENIZER_GENERAL_ERROR;
     }
 
-    return 0;
+    return i;
 }

@@ -4,7 +4,7 @@
 #include <time.h>
 #include "tokenizer.h"
 
-typedef struct {
+typedef struct s_arguments {
     int help;
     int version;
     float lambda;
