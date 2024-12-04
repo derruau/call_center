@@ -10,7 +10,6 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/queue_project",
             "args": [
-                "-h",
                 "-s",
                 "45m:78M",
                 "-d",

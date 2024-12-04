@@ -9,7 +9,6 @@ Tokenizer:
 #include <stdlib.h>
 #include <regex.h>
 #include "../../include/arg_types.h"
-#include "../../include/helper.h"
 
 
 #define TOKENIZER_GENERAL_ERROR 410
@@ -136,7 +135,7 @@ int _tokenizer_handle_duration(char *argv, Token *tokens, int tokens_pos) {
     return 0;
 }
 
-int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
+int _tokenizer_process_argv(char *argv, Token *tokens, int pos) {
     regex_t flag;
     regex_t number;
     regex_t floating_point;
@@ -155,15 +154,15 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
     }
 
     // regexec returns 0 when successful
-    int flag_result = regexec(&flag, argv[pos], 0, NULL, 0);
-    int number_result = regexec(&number, argv[pos], 0, NULL, 0);
-    int floating_point_result = regexec(&floating_point, argv[pos], 0, NULL, 0);
-    int duration_result = regexec(&duration, argv[pos], 0, NULL, 0);
-    int string_result = regexec(&string, argv[pos], 0, NULL, 0);
+    int flag_result = regexec(&flag, argv, 0, NULL, 0);
+    int number_result = regexec(&number, argv, 0, NULL, 0);
+    int floating_point_result = regexec(&floating_point, argv, 0, NULL, 0);
+    int duration_result = regexec(&duration, argv, 0, NULL, 0);
+    int string_result = regexec(&string, argv, 0, NULL, 0);
 
     if (flag_result == 0) { // argv is a flag
-        int start_pos = argv[pos][1] == '-' ? 2 : 1;
-        char *s = _tokenizer_get_substring_of(argv[pos], start_pos);
+        int start_pos = argv[1] == '-' ? 2 : 1;
+        char *s = _tokenizer_get_substring_of(argv, start_pos);
         struct _s_flag *ts = malloc(sizeof(struct _s_flag));
         ts->name = s;
         
@@ -175,7 +174,7 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
 
     if (number_result == 0) { // argv is a number
         int *val = malloc(sizeof(int));
-        *val = atoi(argv[pos]);
+        *val = atoi(argv);
         struct _s_value *s = malloc(sizeof(struct _s_value));
         s->type = INT;
         s->data = (void*) val;
@@ -188,7 +187,7 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
 
     if (floating_point_result == 0) { // argv is a floating point number
         float *val = malloc(sizeof(float));
-        *val = (float)atof(argv[pos]);
+        *val = (float)atof(argv);
         struct _s_value *s = malloc(sizeof(struct _s_value));
         s->data = (void*) val;
         s->type =FLOAT;
@@ -200,14 +199,14 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
     }
 
     if (duration_result == 0) { //argv is a duration
-        _tokenizer_handle_duration(argv[pos], tokens, pos -1);
+        _tokenizer_handle_duration(argv, tokens, pos -1);
 
         return 2;
     }
 
     if (string_result == 0) { //argv is a string
         struct _s_value *s = malloc(sizeof(struct _s_value));
-        s->data = (void*) argv[pos];
+        s->data = (void*) argv;
         s->type = STRING;
 
         tokens[pos - 1].type = VALUE;
@@ -233,8 +232,10 @@ Token *tokenizer_tokenize(int argc, char *argv[], int *number_of_tokens) {
     Token *tokens = malloc(sizeof(Token)*(argc - 1)*2);
 
     int i = 1;
-    while (i < argc) { 
-        i += _tokenizer_process_argv(argv, tokens, i);
+    int current_argv = 1;
+    while (current_argv < argc) { 
+        i += _tokenizer_process_argv(argv[current_argv], tokens, i);
+        current_argv += 1;
     }
 
     //truncate Tokens to it actual size
