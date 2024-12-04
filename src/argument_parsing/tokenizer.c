@@ -243,7 +243,6 @@ Token *tokenizer_tokenize(int argc, char *argv[], int *number_of_tokens) {
         exit(TOKENIZER_GENERAL_ERROR);
     }
 
-    helper_print_tokens(tokens, i-1);
     *number_of_tokens = i - 1;
     return tokens;
 }

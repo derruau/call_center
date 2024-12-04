@@ -124,7 +124,7 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
                 }
                 // If the token has a valid data type 
                 if (e->param_type[j] & tokens[i + j + 1].data.v->type) {
-                    relevant_tokens[j] = &tokens[i + 1];
+                    relevant_tokens[j] = &tokens[i + j +1];
                 } else {
                     printf(BAD_SYNTAX_ERROR_MESSAGE);
                     exit(BAD_SYNTAX_ERROR);

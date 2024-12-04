@@ -13,6 +13,8 @@
                 "-h",
                 "-s",
                 "45m:78M",
+                "-d",
+                "41s:32s",
                 "bruhmoment"
             ],
             "stopAtEntry": false,

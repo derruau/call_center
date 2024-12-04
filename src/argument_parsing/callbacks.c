@@ -1,3 +1,5 @@
+#define _GNU_SOURCE // We need this to call t->tm_gmtoff
+
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -6,42 +8,50 @@
 time_t str_to_time(char* s) {
     size_t l = strlen(s);
 
-    struct tm *t = malloc(sizeof(struct tm));
+    // Initalization of t to the epoch
+    time_t epoch = 0;
+    struct tm *t = gmtime(&epoch);
+    time_t normalization_factor = mktime(t);
+    t->tm_isdst = 0;
+    t->tm_gmtoff = 0;
+    t->tm_zone = "GMT";
 
     switch (s[l - 1])
     {
     case 's':
         s[l - 1] = '\0';
-        t->tm_sec = strtol(s, NULL, 10);
-        return mktime(t);
+        t->tm_sec += strtol(s, NULL, 10);
+        break;
     case 'm':
         s[l - 1] = '\0';
-        t->tm_min = strtol(s, NULL, 10);
-        return mktime(t);
+        t->tm_min += strtol(s, NULL, 10);
+        break;
     case 'h':
         s[l - 1] = '\0';
-        t->tm_hour = strtol(s, NULL, 10);
-        return mktime(t);
+        t->tm_hour += strtol(s, NULL, 10);
+        break;
     case 'd':
         s[l - 1] = '\0';
-        t->tm_mday = strtol(s, NULL, 10);
-        return mktime(t);
+        t->tm_mday += strtol(s, NULL, 10);
+        break;
     case 'w':
         s[l - 1] = '\0';
-        t->tm_mday= strtol(s, NULL, 10)*7;
-        return mktime(t);
+        t->tm_mday += strtol(s, NULL, 10)*7;
+        break;
     case 'M':
         s[l - 1] = '\0';
-        t->tm_mon = strtol(s, NULL, 10);
-        return mktime(t);
+        t->tm_mon += strtol(s, NULL, 10);
+        break;
     case 'y':
         s[l - 1] = '\0';
-        t->tm_year = strtol(s, NULL, 10);
-        return mktime(t);
-    
+        t->tm_year += strtol(s, NULL, 10);
+        break;
     default:
         return -1;
     }
+
+    time_t result = mktime(t) - normalization_factor;
+    return result;
 }
 
 void cb_help(Arguments *arguments, Token **t) {
