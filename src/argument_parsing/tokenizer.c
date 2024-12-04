@@ -26,7 +26,7 @@ Tokenizer:
 #define INT_REGEX "^-?[0-9]+$"
 #define FLOAT_REGEX "^-?[0-9]+\\.[0-9]+$"
 #define DURATION_REGEX "^[0-9]+[smhdwMy]:[0-9]+[smhdwMy]$"
-#define STRING_REGEX "^(\\w| )+$"
+#define STRING_REGEX "^(\\w| |.)+$"
 
 
 char *_tokenizer_get_substring_of(char *s, int start_pos) {
@@ -222,14 +222,14 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
     
 }
 
-int tokenizer_tokenize(int argc, char *argv[], Token *tokens) {
-    if (argc < 1) return TOKENIZER_GENERAL_ERROR;
+Token *tokenizer_tokenize(int argc, char *argv[], int *number_of_tokens) {
+    if (argc < 1) exit(TOKENIZER_GENERAL_ERROR);
 
     // Two times the argc value is the maximum
     // number of tokens we can have because the worst
     // case scenario is every string in argv is a duration
     // which splits into two value tokens.
-    tokens = malloc(sizeof(Token)*(argc - 1)*2);
+    Token *tokens = malloc(sizeof(Token)*(argc - 1)*2);
 
     int i = 1;
     while (i < argc) { 
@@ -239,8 +239,9 @@ int tokenizer_tokenize(int argc, char *argv[], Token *tokens) {
     //truncate Tokens to it actual size
     tokens = realloc(tokens,sizeof(Token)*i);
     if (tokens == NULL) {
-        return TOKENIZER_GENERAL_ERROR;
+        exit(TOKENIZER_GENERAL_ERROR);
     }
 
-    return i;
+    *number_of_tokens = i - 1;
+    return tokens;
 }

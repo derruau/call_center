@@ -44,7 +44,7 @@ typedef struct s_arguments{
     int help;
     int version;
     float lambda;
-    float operators;
+    int operators;
     int number_of_days;
 
     // Corresponds to the -d argument

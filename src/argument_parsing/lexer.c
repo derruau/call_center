@@ -40,6 +40,8 @@ Syntax *lexer_init_syntax() {
     s->current_size = 0;
     s->max_size = 1;
 
+    s->s = malloc(sizeof(Expression*)*s->max_size);
+
     return s;
 }
 
@@ -61,15 +63,15 @@ Expression *lexer_init_expression(char *full_name, char abv, int param_number, i
 }
 
 int lexer_add_expression_to_syntax(Syntax *syntax, Expression *expression ) {
-    if (syntax->current_size == syntax->max_size) {
-        int new_size = sizeof(Syntax) + (syntax->max_size + SYNTAX_SIZE_INCREASE)*sizeof(Expression*);
-        Syntax *ns = realloc(syntax, new_size);
+    if (syntax->current_size <= syntax->max_size) {
+        int new_size = (syntax->max_size + SYNTAX_SIZE_INCREASE)*sizeof(Expression*);
+        Expression **ns = realloc(syntax->s, new_size);
         if (ns == NULL) {
             printf(CANNOT_ADD_SYNTAX_ERROR_MESSAGE);
             exit(CANNOT_ADD_SYNTAX_ERROR);
         }
-        syntax = ns;
-        syntax->max_size = new_size;
+        syntax->s = ns;
+        syntax->max_size += SYNTAX_SIZE_INCREASE;
     }
 
     syntax->s[syntax->current_size] = expression;
@@ -86,6 +88,11 @@ Expression *_lexer_get_expression_from_flag_name(Syntax *syntax, char* name) {
         if (strcmp(syntax->s[i]->full_name, name) == 0) {
             return syntax->s[i];
         }
+
+        if (syntax->s[i]->has_abv == 0) continue;
+        if (syntax->s[i]->abv == name[0]) {
+            return syntax->s[i];
+        }
     }
     printf(FLAG_NOT_IN_SYNTAX_MESSAGE);
     exit(FLAG_NOT_IN_SYNTAX);
@@ -94,32 +101,42 @@ Expression *_lexer_get_expression_from_flag_name(Syntax *syntax, char* name) {
 int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int tokens_size) {
     // If returns anything other than 0, it failed!
 
-
     int i=0;
     while (i < tokens_size) {
+        // Special case of last token (i.e the path)
+        if (i == tokens_size - 1) {
+            if (tokens[i].type == VALUE) {
+                if (tokens[i].data.v->type == STRING) {
+                    arguments->path = (char*)tokens[i].data.v->data;
+                    return 0;
+                }
+            } 
+        }
+
         if (tokens[i].type == FLAG) {
             Expression *e = _lexer_get_expression_from_flag_name(syntax, tokens[i].data.f->name);
-            // RAJOUTER LE CALLBACK DANS lexer_init_expression!!
-            // Aussi la définition du callback est nulle, ce serait mieux de renvoyer directement 
-            // un pointeur vers les tokens des arguments correspondants!!
             Token **relevant_tokens = malloc(sizeof(Token*)*e->param_number);
 
-            for (int i=0; i<e->param_number; i++) {
-                if (i + 1 >= tokens_size || tokens[i + 1].type != VALUE)  {
+            for (int j=0; j<e->param_number; j++) {
+                if (i + j + 1 >= tokens_size || tokens[i + j + 1].type != VALUE)  {
                     printf(BAD_SYNTAX_ERROR_MESSAGE);
                     exit(BAD_SYNTAX_ERROR);
                 }
                 // If the token has a valid data type 
-                if (e->param_type[0] & tokens[i + 1].data.v->type != 0) {
-                    relevant_tokens[i] = &tokens[i];
+                if (e->param_type[j] & tokens[i + j + 1].data.v->type != 0) {
+                    relevant_tokens[j] = &tokens[i + 1];
                 }
             }
 
             // Calling the callback
             e->cb(arguments, relevant_tokens);
+
+            i += e->param_number + 1;
+            continue;
         }
 
-        i++;
+        printf(BAD_SYNTAX_ERROR_MESSAGE);
+        exit(BAD_SYNTAX_ERROR);
     }
 }
 

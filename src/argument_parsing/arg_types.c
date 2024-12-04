@@ -41,7 +41,7 @@ typedef struct s_arguments{
     int help;
     int version;
     float lambda;
-    float operators;
+    int operators;
     int number_of_days;
 
     // Corresponds to the -d argument
@@ -57,7 +57,7 @@ typedef struct s_arguments{
 
 //================ lexer.c types ================
 
-typedef void (*lexer_callback)(struct s_arguments *a, struct s_tokens **t); 
+typedef void (*lexer_callback)(Arguments *a, Token **t); 
 
 typedef struct {
     char abv;

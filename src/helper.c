@@ -1,6 +1,7 @@
 #include "../include/queue.h"
 #include "../include/stack.h"
 #include "../include/call.h"
+#include "../include/arg_types.h"
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
@@ -111,4 +112,19 @@ char* helper_get_random_name_from_file(char *path) {
 
     return full_name;
     
+}
+
+void helper_print_arguments(Arguments *a) {
+    printf("Argument { \n");
+    printf("   int help: %i\n", a->help);
+    printf("   int version: %i\n", a->version);
+    printf("   float lambda: %f\n", a->lambda);
+    printf("   int operators: %i\n", a->operators);
+    printf("   int number_of_days: %i\n", a->number_of_days);
+    printf("   time_t minsrv: %li\n", a->minsrv);
+    printf("   time_t maxsrv: %li\n", a->maxsrv);
+    printf("   time_t shift_opening: %li\n", a->shift_opening);
+    printf("   time_t shift_closing: %li\n", a->shift_closing);
+    printf("   char* path: %s\n", a->path);
+    printf("}\n");
 }

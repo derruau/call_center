@@ -53,8 +53,9 @@ void cb_version(Arguments *arguments, Token **t) {
 }
 
 void cb_lambda(Arguments *arguments, Token **t) {
-    // There is only one argument with this callback 
-    arguments->lambda = *(float*)t[0]->data.v->data;
+    // There is only one argument with this callback
+    if (t[0]->data.v->type == INT) arguments->lambda = *(int*) t[0]->data.v->data;
+    else arguments->lambda = *(float*)t[0]->data.v->data;
 }
 
 void cb_shift(Arguments *arguments, Token **t) {

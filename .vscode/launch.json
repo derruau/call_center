@@ -10,17 +10,11 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/queue_project",
             "args": [
-                "125",
-                "457",
-                "1.2",
-                "1.54",
-                "fdkpsod dsd",
-                "jodfs",
-                "456",
-                "-a",
-                "--afdsfsa",
-                "4d:5s",
-                "2s:182M"
+                "-h",
+                "-v",
+                "-l",
+                "45",
+                "bruhmoment"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

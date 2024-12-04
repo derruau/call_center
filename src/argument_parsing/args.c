@@ -83,8 +83,8 @@ Syntax* _args_create_syntax() {
 int args_handle(int argc, char *argv[], Arguments *arguments) {
     // If returns anything other than 0, it failed
 
-    Token *tokens;
-    int number_of_tokens = tokenizer_tokenize(argc, argv, tokens);
+    int number_of_tokens = 0;
+    Token *tokens = tokenizer_tokenize(argc, argv, &number_of_tokens);
 
     Syntax *syntax = _args_create_syntax();
 

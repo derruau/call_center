@@ -5,6 +5,6 @@
 
 void tokenizer_print_token(Token token);
 
-int tokenizer_tokenize(int argc, char *argv[], Token *tokens);
+Token *tokenizer_tokenize(int argc, char *argv[], int *number_of_tokens);
 
 #endif
