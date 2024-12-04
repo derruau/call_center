@@ -103,7 +103,7 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
 
     int i=0;
     while (i < tokens_size) {
-        // Special case of last token (i.e the path)
+        // Special case for the last token (i.e the path)
         if (i == tokens_size - 1) {
             if (tokens[i].type == VALUE) {
                 if (tokens[i].data.v->type == STRING) {
@@ -117,14 +117,17 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
             Expression *e = _lexer_get_expression_from_flag_name(syntax, tokens[i].data.f->name);
             Token **relevant_tokens = malloc(sizeof(Token*)*e->param_number);
 
-            for (int j=0; j<e->param_number; j++) {
+            for (int j = 0; j < e->param_number; j++) {
                 if (i + j + 1 >= tokens_size || tokens[i + j + 1].type != VALUE)  {
                     printf(BAD_SYNTAX_ERROR_MESSAGE);
                     exit(BAD_SYNTAX_ERROR);
                 }
                 // If the token has a valid data type 
-                if (e->param_type[j] & tokens[i + j + 1].data.v->type != 0) {
+                if (e->param_type[j] & tokens[i + j + 1].data.v->type) {
                     relevant_tokens[j] = &tokens[i + 1];
+                } else {
+                    printf(BAD_SYNTAX_ERROR_MESSAGE);
+                    exit(BAD_SYNTAX_ERROR);
                 }
             }
 

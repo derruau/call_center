@@ -15,6 +15,7 @@ a little more interesting.
 #include "../../include/lexer.h"
 #include "../../include/callbacks.h"
 #include "../../include/arg_types.h"
+#include "../../include/helper.h"
 
 #define TOKENIZER_ERROR 401
 #define LEXER_ERROR 402
@@ -82,9 +83,10 @@ Syntax* _args_create_syntax() {
 
 int args_handle(int argc, char *argv[], Arguments *arguments) {
     // If returns anything other than 0, it failed
-
+    
     int number_of_tokens = 0;
     Token *tokens = tokenizer_tokenize(argc, argv, &number_of_tokens);
+
 
     Syntax *syntax = _args_create_syntax();
 

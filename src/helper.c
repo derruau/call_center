@@ -128,3 +128,49 @@ void helper_print_arguments(Arguments *a) {
     printf("   char* path: %s\n", a->path);
     printf("}\n");
 }
+
+void helper_print_tokens(Token *t, int size) {
+
+    for (int i=0; i < size; i++) {
+        if (t[i].type == FLAG) {
+            if (t[i].data.v->type == DURATION_UNIT) {
+                printf("Token{ type: flag, data: {type: DURATION_UNIT, data: %s} }", (char*) t[i].data.v->data);
+                continue;
+
+            }
+            printf("Token{ type: FLAG, data: {name: %s} }", (char*) t[i].data.f->name);
+        }
+        else if (t[i].type == VALUE) {
+            switch (t[i].data.v->type)
+            {
+            case INT:
+                printf("Token{ type: VALUE, data: {type: INT, data: %i} }", *(int*)t[i].data.v->data);
+                break;
+            case FLOAT:
+                printf("Token{ type: VALUE, data: {type: FLOAT, data: %f} }", *(float*) t[i].data.v->data);
+                break;
+            case DURATION:
+                printf("Token{ type: VALUE, data: {type: DURATION, data: %s} }", (char*) t[i].data.v->data);
+                break;
+            case DURATION_UNIT:
+                printf("Token{ type: VALUE, data: {type: DURATION_UNIT, data: %s} }", (char*) t[i].data.v->data);
+                break;
+            case STRING:
+                printf("Token{ type: VALUE, data: {type: STRING, data: %s} }", (char*) t[i].data.v->data);
+                break;
+            
+            default:
+                printf("Value Token w/ bad data type at position %i", i);
+                break;
+            }
+        } else {
+            printf("Bad Token at position %i", i);
+        }
+
+        if (i == size -1) {
+            printf("\n");
+            break;
+        };
+        printf("  -->  ");
+    }
+}

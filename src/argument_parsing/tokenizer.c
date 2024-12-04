@@ -9,6 +9,7 @@ Tokenizer:
 #include <stdlib.h>
 #include <regex.h>
 #include "../../include/arg_types.h"
+#include "../../include/helper.h"
 
 
 #define TOKENIZER_GENERAL_ERROR 410
@@ -199,7 +200,7 @@ int _tokenizer_process_argv(char *argv[], Token *tokens, int pos) {
     }
 
     if (duration_result == 0) { //argv is a duration
-        _tokenizer_handle_duration(argv[pos], tokens, pos);
+        _tokenizer_handle_duration(argv[pos], tokens, pos -1);
 
         return 2;
     }
@@ -242,6 +243,7 @@ Token *tokenizer_tokenize(int argc, char *argv[], int *number_of_tokens) {
         exit(TOKENIZER_GENERAL_ERROR);
     }
 
+    helper_print_tokens(tokens, i-1);
     *number_of_tokens = i - 1;
     return tokens;
 }
