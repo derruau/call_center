@@ -13,7 +13,7 @@
 #define MAX_NAME_LENGTH 32
 
 void helper_print_call(Call *c) {
-    printf("{ call_id:%i, tel:%s }", c->id, c->tel);
+    printf("Call{ call_id:%i, name: %s, tel:%s }\n", c->id, c->client_name,  c->tel);
 }
 
 void helper_print_call_queue(Queue *q) {

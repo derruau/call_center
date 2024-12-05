@@ -1,5 +1,6 @@
 #include "../include/helper.h"
 #include "../include/args.h"
+#include "../include/call.h"
 
 //TODO: add documentation to the code
 //TODO: Make the functions have a more consistent style
@@ -13,5 +14,13 @@ int main(int argc, char *argv[]) {
     int arg_parsing_error = args_handle(argc, argv, a);
 
     helper_print_arguments(a);
+
+    Call **c = call_create_n_random(10, a->shift_opening, a->shift_closing, a->lambda, a->minsrv, a->maxsrv);
+
+    for (int i=0; i<10; i++) {
+        helper_print_call(c[i]);
+    }
+
+    return 0;
 
 }

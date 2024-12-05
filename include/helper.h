@@ -7,6 +7,8 @@
 #include "arg_types.h"
 #include <stdio.h>
 
+void helper_print_call(Call *c);
+
 void helper_print_call_queue(Queue *q);
 
 void helper_print_int_queue(Queue *q);

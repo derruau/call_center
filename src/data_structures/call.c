@@ -28,16 +28,16 @@ typedef struct call {
 Call *call_create_random(int id, time_t call_start, time_t call_end) {
     Call *c = malloc(sizeof(Call));
 
-    char *tel = malloc(sizeof(char)*10);
-    tel[0] = '0';
-    tel[1] = '6';
+    c->tel = malloc(sizeof(char)*11);
+    c->tel[0] = '0';
+    c->tel[1] = '6';
     for (int i=2; i<10; i++) {
         char n = ZERO_ASCII + (rand() % 10);
-        tel[i] = n;
+        c->tel[i] = n;
     }
+    c->tel[10] = '\0';
 
     c->id = id;
-    c->tel = tel;
     c->client_name = helper_get_random_name_from_file(NAMES_PATH);
     c->wait_time = -1; // Calculated at runtime
     c->call_start = call_start;
@@ -48,10 +48,11 @@ Call *call_create_random(int id, time_t call_start, time_t call_end) {
 
 void call_free(Call *c) {
     free(c->tel);
+    free(c->client_name);
     free(c);
 }
 
-Call *call_create_n_random(
+Call **call_create_n_random(
     int n,
     time_t shift_start, 
     time_t shift_end, 
@@ -73,4 +74,6 @@ Call *call_create_n_random(
 
         prev_call = call_start;
     }
+
+    return calls;
 }
