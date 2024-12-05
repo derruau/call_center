@@ -1,9 +1,5 @@
-#include "../include/call.h"
-#include "../include/queue.h"
 #include "../include/helper.h"
 #include "../include/args.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 //TODO: add documentation to the code
 //TODO: Make the functions have a more consistent style
