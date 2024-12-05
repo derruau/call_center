@@ -21,6 +21,8 @@ char* helper_get_random_name_from_file(char *path);
 
 void helper_print_arguments(Arguments *a);
 
+void helper_print_token(Token token);
+
 void helper_print_tokens(Token *t, int size);
 
 #endif

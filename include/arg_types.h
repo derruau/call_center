@@ -77,14 +77,14 @@ typedef struct {
     // For example: if the parameter can be a FLOAT or an INT the Value will be
     // equal to FLOAT | INT
     int param_type[];
-} Expression;
+} Rule;
 
 typedef struct {
     int max_size;
     int current_size;
     // A hash table would be better because that would mean
     // instant access time but with small syntax size it's fine.
-    Expression **s;
+    Rule **s;
 } Syntax;
 
 

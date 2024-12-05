@@ -1,8 +1,28 @@
-/*
+/* 
+========================================== TOKENIZER.C ==========================================
+This file transforms the string arguments into what's called Tokens.
 
-Tokenizer:
-    Uhhh...
+If you don't know what is Token is:
+    To understand what a Token is, let's look at an example. SUppose you want to evaluate a 
+    mathematical expression from the string: "3 + 5"
+    A Tokenizer will look at the string and classify each parts of it:
+        - '3' will be classified as a number
+        - '+' will be classified as an operator
+        - '5' will also be classified as a number
+    These classified objects (Tokens) represent a unit of meaning within the context of the
+    Parser. 
+    
+    This list of Tokens will then be sent to the next phase of Parsing: the Lexer.
 
+
+Prerequisite: See arg_types.c's header documentation for more information on FLAG, VALUES, and
+TYPES.
+
+The way the Tokenizer works is by first defining the Regex of each type and for each string
+argument check each regex to see if any of them match.
+Once we have a match, it will process the string argument and convert it to a more readable
+and more easily processable data type.
+========================================== TOKENIZER.C ==========================================
 */
 
 #include <stdio.h>
@@ -22,13 +42,17 @@ Tokenizer:
 #define BAD_TOKEN_TYPE_MESSAGE "[TOKENIZER ERROR] - Token type not recognised!"
 
 
+// Types definition
 #define FLAG_REGEX "(^-[a-z]$)|(^--[a-z](([a-z])|(-)){1,}$)"
 #define INT_REGEX "^-?[0-9]+$"
 #define FLOAT_REGEX "^-?[0-9]+\\.[0-9]+$"
 #define DURATION_REGEX "^[0-9]+[smhdwMy]:[0-9]+[smhdwMy]$"
 #define STRING_REGEX "^(\\w| |.)+$"
 
-
+// Gets a substring starting from a certain position to
+// the end of the string including the starting_position.
+// For example _tokenizer_get_substring_of("abcdefg", 3)
+// will return "defg"
 char *_tokenizer_get_substring_of(char *s, int start_pos) {
     char *result = malloc(sizeof(char)*20);
     int malloc_size = 1;
@@ -51,38 +75,9 @@ char *_tokenizer_get_substring_of(char *s, int start_pos) {
     return result;
 }
 
-void tokenizer_print_token(Token token) {
-    if (token.type == FLAG) {
-        if (token.data.f == 0) return;
-        printf("Token{ type: FLAG, name: %s}\n", (char*)token.data.f->name);
-    } else if (token.type == VALUE)
-    {
-        switch (token.data.v->type)
-        {
-        case INT:
-            printf("Token{type: VALUE, {data: %i, type: INT}}\n", *(int*)token.data.v->data);
-            break;
-        case FLOAT:
-            printf("Token{type: VALUE, {data: %f, type: FLOAT}}\n", *(float*)token.data.v->data);
-            break;
-        case DURATION:
-            printf("Token{type: VALUE, {data: %s, type: DURATION}}\n", (char*)token.data.v->data);
-            break;
-        case DURATION_UNIT:
-            printf("Token{type: VALUE, {data: %s, type: DURATION_UNIT}}\n", (char*)token.data.v->data);
-            break;
-        case STRING:
-            printf("Token{type: VALUE, {data: %s, type: STRING}}\n", (char*)token.data.v->data);
-            break;
-        default:
-            break;
-        }
-    } else {
-        printf(BAD_TOKEN_TYPE_MESSAGE);
-        exit(BAD_TOKEN_TYPE);
-    }
-}
-
+// Should not be used outside of this file!
+// Separates a string argument of type DURATION
+// into two DURATION_UNIT and puts them in the tokens
 int _tokenizer_handle_duration(char *argv, Token *tokens, int tokens_pos) {
     char **strings = malloc(sizeof(char*)*2);
     int current_string = 0;
@@ -95,7 +90,7 @@ int _tokenizer_handle_duration(char *argv, Token *tokens, int tokens_pos) {
         if (c == ':') {
             strings[current_string][i] = '\0';
 
-            //Initialization of end duration n°2
+            //Initialization of end duration
             current_string++;
             strings[current_string] = malloc(sizeof(char));
             
@@ -135,6 +130,9 @@ int _tokenizer_handle_duration(char *argv, Token *tokens, int tokens_pos) {
     return 0;
 }
 
+// Should not be used outside of this file
+// Transforms a string argument into a  (or multiple) Token(s)
+// and puts it into the tokens list
 int _tokenizer_process_argv(char *argv, Token *tokens, int pos) {
     regex_t flag;
     regex_t number;
@@ -222,6 +220,8 @@ int _tokenizer_process_argv(char *argv, Token *tokens, int pos) {
     
 }
 
+
+// Tokenize the string arguments list
 Token *tokenizer_tokenize(int argc, char *argv[], int *number_of_tokens) {
     if (argc < 1) exit(TOKENIZER_GENERAL_ERROR);
 

@@ -1,11 +1,29 @@
 /* 
+========================================== ARGS.C ==========================================
+This is an Argument Parser. 
+It it comprised of a Tokenizer and a Lexer.
 
-This is an argument parser. 
-It it comprised of a Tokenizer, a Lexer and a Parser.
+It's role is to transform the string arguments inputed by the user when calling the
+program and return an Argument struct which contains the parsed arguments.
 
-We chose not to use <argp.h> to parse arguments to make the code 
-a little more interesting.
 
+The parser is designed to be modular. If you want to add another argument:
+    1. Add a field to the Argument struct (see arg_types.c)
+    2. Register the parameter to the parser syntax (see lexer_add_rule_to_syntax())
+    3. Write a callback function which actually parses the relevant Tokens (if they need 
+       to be parsed) and puts them in the Argument struct.
+(Obviously, if the argument's type is not defined, you also need to change the Tokenizer)
+
+The Parser works like this:
+    1. Definition of a Syntax (a list of allowed arguments)
+    2. Tokenization the String Arguments
+    3. Syntax Verification with the Lexer: we're matching the syntax against the Tokens
+    4. Callbacks calls with their relevant Tokens to fill up the Argument struct
+
+Remarks:
+    We chose not to use <argp.h> to parse arguments to make the code a little more
+    interesting.
+========================================== ARGS.C ==========================================
 */
 
 #include <time.h>
@@ -30,6 +48,8 @@ a little more interesting.
 #define SHIFT_CLOSING_DEFAULT 4666
 #define PATH_DEFAULT "output.txt"
 
+// Creates an instance of the Argument class
+// with default parameters.
 Arguments *args_create_arguments() {
     Arguments *a = malloc(sizeof(Arguments));
 
@@ -46,43 +66,45 @@ Arguments *args_create_arguments() {
     return a;
 }
 
+// Should not be called outside of this file.
+// This is where you add another Syntax rule.
 Syntax* _args_create_syntax() {
 
     Syntax *syntax = lexer_init_syntax();
     
-    Expression *help = lexer_init_expression("help", 'h', 0, NULL, &cb_help);
-    lexer_add_expression_to_syntax(syntax, help);
+    Rule *help = lexer_init_rule("help", 'h', 0, NULL, &cb_help);
+    lexer_add_rule_to_syntax(syntax, help);
 
-    Expression *version = lexer_init_expression("version", 'v', 0, NULL, &cb_version);
-    lexer_add_expression_to_syntax(syntax, version);
+    Rule *version = lexer_init_rule("version", 'v', 0, NULL, &cb_version);
+    lexer_add_rule_to_syntax(syntax, version);
 
     int lambda_types[] = {INT | FLOAT};
-    Expression *lambda = lexer_init_expression("lambda", 'l', 1, lambda_types, &cb_lambda);
-    lexer_add_expression_to_syntax(syntax, lambda);
+    Rule *lambda = lexer_init_rule("lambda", 'l', 1, lambda_types, &cb_lambda);
+    lexer_add_rule_to_syntax(syntax, lambda);
 
     int shift_types[] = {DURATION_UNIT, DURATION_UNIT};
-    Expression *shift = lexer_init_expression("shift", 's', 2, shift_types, &cb_shift);
-    lexer_add_expression_to_syntax(syntax, shift);
+    Rule *shift = lexer_init_rule("shift", 's', 2, shift_types, &cb_shift);
+    lexer_add_rule_to_syntax(syntax, shift);
 
     int duration_types[] = {DURATION_UNIT, DURATION_UNIT};
-    Expression *duration = lexer_init_expression("duration", 'd', 2, duration_types, &cb_duration);
-    lexer_add_expression_to_syntax(syntax, duration);
+    Rule *duration = lexer_init_rule("duration", 'd', 2, duration_types, &cb_duration);
+    lexer_add_rule_to_syntax(syntax, duration);
 
     int number_of_days_types[] = {INT};
-    Expression *number_of_days = lexer_init_expression("number-of-days", 'n', 1, number_of_days_types, &cb_number_of_days);
-    lexer_add_expression_to_syntax(syntax, number_of_days);
+    Rule *number_of_days = lexer_init_rule("number-of-days", 'n', 1, number_of_days_types, &cb_number_of_days);
+    lexer_add_rule_to_syntax(syntax, number_of_days);
 
     int operators_types[] = {INT};
-    Expression *operators =lexer_init_expression("operators", 'o', 1, operators_types, &cb_operators);
-    lexer_add_expression_to_syntax(syntax, operators);
+    Rule *operators =lexer_init_rule("operators", 'o', 1, operators_types, &cb_operators);
+    lexer_add_rule_to_syntax(syntax, operators);
 
     return syntax;
 
 }
 
+// Parses the string arguments and puts them into an Arguments struct.
 int args_handle(int argc, char *argv[], Arguments *arguments) {
-    // If returns anything other than 0, it failed
-    
+
     int number_of_tokens = 0;
     Token *tokens = tokenizer_tokenize(argc, argv, &number_of_tokens);
 

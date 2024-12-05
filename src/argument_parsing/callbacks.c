@@ -1,3 +1,16 @@
+/* 
+========================================== CALLBACKS.C ==========================================
+This file contains all the callbacks for the different Rules defined in args.c
+
+A callback (in this case) is a function that takes in some relevant Tokens and does some work on 
+them if necessary. It then and puts the Token's data in an Argument struct at their designated 
+place.
+
+Please see the arg_types.c and args.c's documentation header for further information about these 
+callbacks and how they integrate with the program.
+========================================== CALLBACKS.C ==========================================
+*/
+
 #define _GNU_SOURCE // We need this to call t->tm_gmtoff
 
 #include <time.h>
@@ -5,7 +18,17 @@
 #include <stdlib.h>
 #include "../../include/arg_types.h"
 
-time_t str_to_time(char* s) {
+// Duration prefix definition
+#define SECONDS 's'
+#define MINUTES 'm'
+#define HOUR 'h'
+#define DAY 'd'
+#define WEEK 'w'
+#define MONTH 'M'
+#define YEAR 'y'
+
+// Converts DURATION_UNIT Token data to time_tZ
+time_t duration_unit_to_time(char* s) {
     size_t l = strlen(s);
 
     // Initalization of t to the epoch
@@ -18,31 +41,31 @@ time_t str_to_time(char* s) {
 
     switch (s[l - 1])
     {
-    case 's':
+    case SECONDS:
         s[l - 1] = '\0';
         t->tm_sec += strtol(s, NULL, 10);
         break;
-    case 'm':
+    case MINUTES:
         s[l - 1] = '\0';
         t->tm_min += strtol(s, NULL, 10);
         break;
-    case 'h':
+    case HOUR:
         s[l - 1] = '\0';
         t->tm_hour += strtol(s, NULL, 10);
         break;
-    case 'd':
+    case DAY:
         s[l - 1] = '\0';
         t->tm_mday += strtol(s, NULL, 10);
         break;
-    case 'w':
+    case WEEK:
         s[l - 1] = '\0';
         t->tm_mday += strtol(s, NULL, 10)*7;
         break;
-    case 'M':
+    case MONTH:
         s[l - 1] = '\0';
         t->tm_mon += strtol(s, NULL, 10);
         break;
-    case 'y':
+    case YEAR:
         s[l - 1] = '\0';
         t->tm_year += strtol(s, NULL, 10);
         break;
@@ -70,20 +93,20 @@ void cb_lambda(Arguments *arguments, Token **t) {
 
 void cb_shift(Arguments *arguments, Token **t) {
     char *_otmp = (char*)t[0]->data.v->data;
-    arguments->shift_opening = str_to_time(_otmp);
+    arguments->shift_opening = duration_unit_to_time(_otmp);
 
 
     char *_ctmp = (char*)t[1]->data.v->data;
-    arguments->shift_closing = str_to_time(_ctmp);
+    arguments->shift_closing = duration_unit_to_time(_ctmp);
 }
 
 void cb_duration(Arguments *arguments, Token **t) {
     char *minsrv = (char*)t[0]->data.v->data;
-    arguments->minsrv = str_to_time(minsrv);
+    arguments->minsrv = duration_unit_to_time(minsrv);
 
 
     char *maxsrv = (char*)t[1]->data.v->data;
-    arguments->maxsrv = str_to_time(maxsrv);
+    arguments->maxsrv = duration_unit_to_time(maxsrv);
 }
 
 void cb_number_of_days(Arguments *arguments, Token **t) {

@@ -3,8 +3,6 @@
 
 #include <time.h>
 
-#define __USE_BSD
-
 time_t str_to_time(char* s);
 
 void cb_help(Arguments *arguments, Token **t);

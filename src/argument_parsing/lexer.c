@@ -1,17 +1,37 @@
-/*
+/* 
+========================================== LEXER.C ==========================================
+This file matches the Tokens against the Syntax and passes relevant Tokens to each 
+callback functions.
 
-Lexer.c
-    Checks the syntax of the tokens and converts them to a parse tree 
+If you don't know what a Lexer is:
+    A Lexer is part of a Parser. It takes a list of Token as an input and will try to make
+    sense of them. For example with the string '3 + 5' from the Tokenizer's header 
+    comment, the input will be [ ['3', number] , ['+', operator ], ['5', number] ].
+    The Lexer will read all three Tokens and conclude that they mean to represent the addition
+    of 3 and 5. It will represent this meaning in a special structure called an Abstract Syntax
+    Tree and pass this tree to the next component of the Parser: The Parser.
 
-Syntax:
-    - Tree: [EXPRESSION]* Path(String)
-    - EXPRESSION: [OPTION] | [PARAMETER]
-    - OPTION: atom <-- Option = Parameter avec 0 VALUES DERRIERE
-    - PARAMETER: [FLAG] [VALUE]+
+    In this program, we don't need a Syntax Tree nor a Parser, so this explanation is somewhat
+    useless but it's cool to learn about Parser Theory.
 
-Architecture:
-    - Definition of the options & parameters at runtime
-    - 
+
+
+For definitions and explanations about Rules and Syntax, please see arg_types.c's header
+comment.
+
+The General Syntax that this parser matches is the following (in Regex notation):
+                            [Rule]* [STRING]
+With a Rule being defined like this: 
+                            [FLAG] [VALUE]*
+
+The [STRING] at the end of the Syntax is the path that the simulation result will be saved to.
+It is a special Syntax qwirk that isn't defined in a Rule but is hardcoded in lexer_get_arguments().
+
+Remarks:
+    To be able to define this qwirk in a Rule, I would have to introduce some kind of position
+    sensitive syntax system (which I don't have the time to do right now) or otherwise make a
+    fully fledged parser with an AST. 
+========================================== LEXER.C ==========================================
 */
 
 #include <stdlib.h>
@@ -30,23 +50,25 @@ Architecture:
 
 #define SYNTAX_SIZE_INCREASE 5
 
-// Forward declarations 
-typedef struct s_arguments Arguments;
-struct s_tokens;
-
+// Retuns a new Syntax struct with default 
+// values filled in.
+// See arg_types.c for explanations about what is a Syntax
 Syntax *lexer_init_syntax() {
     Syntax *s = malloc(sizeof(Syntax));
 
     s->current_size = 0;
     s->max_size = 1;
 
-    s->s = malloc(sizeof(Expression*)*s->max_size);
+    s->s = malloc(sizeof(Rule*)*s->max_size);
 
     return s;
 }
 
-Expression *lexer_init_expression(char *full_name, char abv, int param_number, int param_type[], lexer_callback cb) {
-    Expression *e = malloc(sizeof(Expression) + param_number*sizeof(Expression));
+//TODO: rename parameters for better consistency
+// Returns a new Rule with the parameters you've passed it
+// See arg_types.c for explanations about what is a Rule
+Rule *lexer_init_rule(char *full_name, char abv, int param_number, int param_type[], lexer_callback cb) {
+    Rule *e = malloc(sizeof(Rule) + param_number*sizeof(Rule));
 
     e->full_name = full_name;
     e->has_abv = abv == '\0' ? 0 : 1;
@@ -62,10 +84,12 @@ Expression *lexer_init_expression(char *full_name, char abv, int param_number, i
     return e;
 }
 
-int lexer_add_expression_to_syntax(Syntax *syntax, Expression *expression ) {
+// Adds a Rule to the Syntax
+// See arg_types.c for explanations about what is a Rule / Syntax
+int lexer_add_rule_to_syntax(Syntax *syntax, Rule *expression ) {
     if (syntax->current_size <= syntax->max_size) {
-        int new_size = (syntax->max_size + SYNTAX_SIZE_INCREASE)*sizeof(Expression*);
-        Expression **ns = realloc(syntax->s, new_size);
+        int new_size = (syntax->max_size + SYNTAX_SIZE_INCREASE)*sizeof(Rule*);
+        Rule **ns = realloc(syntax->s, new_size);
         if (ns == NULL) {
             printf(CANNOT_ADD_SYNTAX_ERROR_MESSAGE);
             exit(CANNOT_ADD_SYNTAX_ERROR);
@@ -82,8 +106,10 @@ int lexer_add_expression_to_syntax(Syntax *syntax, Expression *expression ) {
 }
 
 
-
-Expression *_lexer_get_expression_from_flag_name(Syntax *syntax, char* name) {
+// Should not be used outside this file
+// Searches a Rule in the Syntax and returns the first
+// Rule that matches the name provided
+Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* name) {
     for (int i=0; i<syntax->current_size; i++) {
         if (strcmp(syntax->s[i]->full_name, name) == 0) {
             return syntax->s[i];
@@ -98,8 +124,11 @@ Expression *_lexer_get_expression_from_flag_name(Syntax *syntax, char* name) {
     exit(FLAG_NOT_IN_SYNTAX);
 }
 
+//TODO: rename parameters for better consistency
+// The main Lexer function.
+// Checks the Tokens against the Syntax and fills up
+// the Arguments struct with the relevant informations
 int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int tokens_size) {
-    // If returns anything other than 0, it failed!
 
     int i=0;
     while (i < tokens_size) {
@@ -114,7 +143,7 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
         }
 
         if (tokens[i].type == FLAG) {
-            Expression *e = _lexer_get_expression_from_flag_name(syntax, tokens[i].data.f->name);
+            Rule *e = _lexer_get_rule_from_flag_name(syntax, tokens[i].data.f->name);
             Token **relevant_tokens = malloc(sizeof(Token*)*e->param_number);
 
             for (int j = 0; j < e->param_number; j++) {

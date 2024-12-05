@@ -129,43 +129,40 @@ void helper_print_arguments(Arguments *a) {
     printf("}\n");
 }
 
+void helper_print_token(Token token) {
+    if (token.type == FLAG) {
+        if (token.data.f == 0) return;
+        printf("Token{type: FLAG, name: %s}\n", (char*)token.data.f->name);
+    } else if (token.type == VALUE)
+    {
+        switch (token.data.v->type)
+        {
+        case INT:
+            printf("Token{type: VALUE, {data: %i, type: INT}}\n", *(int*)token.data.v->data);
+            break;
+        case FLOAT:
+            printf("Token{type: VALUE, {data: %f, type: FLOAT}}\n", *(float*)token.data.v->data);
+            break;
+        case DURATION:
+            printf("Token{type: VALUE, {data: %s, type: DURATION}}\n", (char*)token.data.v->data);
+            break;
+        case DURATION_UNIT:
+            printf("Token{type: VALUE, {data: %s, type: DURATION_UNIT}}\n", (char*)token.data.v->data);
+            break;
+        case STRING:
+            printf("Token{type: VALUE, {data: %s, type: STRING}}\n", (char*)token.data.v->data);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 void helper_print_tokens(Token *t, int size) {
 
     for (int i=0; i < size; i++) {
-        if (t[i].type == FLAG) {
-            if (t[i].data.v->type == DURATION_UNIT) {
-                printf("Token{ type: flag, data: {type: DURATION_UNIT, data: %s} }", (char*) t[i].data.v->data);
-                continue;
-
-            }
-            printf("Token{ type: FLAG, data: {name: %s} }", (char*) t[i].data.f->name);
-        }
-        else if (t[i].type == VALUE) {
-            switch (t[i].data.v->type)
-            {
-            case INT:
-                printf("Token{ type: VALUE, data: {type: INT, data: %i} }", *(int*)t[i].data.v->data);
-                break;
-            case FLOAT:
-                printf("Token{ type: VALUE, data: {type: FLOAT, data: %f} }", *(float*) t[i].data.v->data);
-                break;
-            case DURATION:
-                printf("Token{ type: VALUE, data: {type: DURATION, data: %s} }", (char*) t[i].data.v->data);
-                break;
-            case DURATION_UNIT:
-                printf("Token{ type: VALUE, data: {type: DURATION_UNIT, data: %s} }", (char*) t[i].data.v->data);
-                break;
-            case STRING:
-                printf("Token{ type: VALUE, data: {type: STRING, data: %s} }", (char*) t[i].data.v->data);
-                break;
-            
-            default:
-                printf("Value Token w/ bad data type at position %i", i);
-                break;
-            }
-        } else {
-            printf("Bad Token at position %i", i);
-        }
+        
+        helper_print_token(t[i]);
 
         if (i == size -1) {
             printf("\n");
