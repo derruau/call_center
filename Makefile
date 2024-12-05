@@ -23,7 +23,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 # The -MMD and -MP flags together autogenerate Makefiles
 # These files will have .d instead of .o as the output.
-CPPFLAGS := $(INC_FLAGS) -MMD -MP
+CPPFLAGS := $(INC_FLAGS) -MMD -MP -lregex -IC:/msys64/uctr64/include
 
 # Final build step
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
@@ -46,7 +46,13 @@ windows:
 .PHONY: clean
 clean:
 	@rm -r $(BUILD_DIR)
+	@mkdir $(BUILD_DIR) 
 	@echo Cleaned build directory!
+
+.PHONY: debug
+debug: clean
+debug: CPPFLAGS += -ggdb
+debug: $(BUILD_DIR)/$(TARGET_EXEC)
 
 # Includes the .d makefiles
 -include $(DEPS)

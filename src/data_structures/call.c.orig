@@ -75,5 +75,9 @@ Call **call_create_n_random(
         prev_call = call_start;
 
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 890bb4a46d64e28a7e7d515ba6bade8ab195a0f7
     return calls;
 }
