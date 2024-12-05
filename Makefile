@@ -4,8 +4,10 @@ BUILD_DIR := ./build
 SRC_DIR := ./src
 HEADER_DIR := ./include
 
+FIND_ZANA := C:\msys64\usr\bin\find.exe
+
 # Recursively finds any C files in $(SRC_DIR) 
-SRCS := $(shell find $(SRC_DIR) -name '*.c')
+SRCS := $(shell $(FIND_ZANA) $(SRC_DIR) -name '*.c')
 
 # Every files in $(SRCS) but as object files with extension .c.o
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
@@ -14,7 +16,7 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 # Every folder in ./src will need to be passed to GCC so that it can find header files
-INC_DIRS := $(shell find $(HEADER_DIR) -type d)
+INC_DIRS := $(shell $(FIND_ZANA) $(HEADER_DIR) -type d)
 # Add a prefix to INC_DIRS. So moduleA would become -ImoduleA
 # This makes gcc aware that those folders contain header files
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
@@ -35,6 +37,11 @@ $(BUILD_DIR)/%.c.o: %.c
 	@mkdir -p $(dir $@)
 	@echo Assembling '$(shell basename -s .c.o $@)'...
 	@$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
+.PHONY: windows
+windows:
+	$(shell MAKE_OS=windows)
+	@(shell echo %MAKE_OS%)
 
 .PHONY: clean
 clean:

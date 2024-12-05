@@ -51,7 +51,7 @@ void call_free(Call *c) {
     free(c);
 }
 
-Call *call_create_n_random(
+Call **call_create_n_random(
     int n,
     time_t shift_start, 
     time_t shift_end, 
@@ -72,5 +72,7 @@ Call *call_create_n_random(
         calls[i] = call_create_random(i, call_start, call_end);
 
         prev_call = call_start;
+
     }
+    return calls;
 }
