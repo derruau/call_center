@@ -1,6 +1,6 @@
-#include "helper.h"
+#include "argparse/misc.h"
 #include "argparse/parser.h"
-#include "call.h"
+#include "sim/call.h"
 #include "simulation.h"
 
 #define PROGRAM_NAME "call_center"
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     Arguments *a = parser_create_arguments();
     int arg_parsing_error = parser_parse_args(argc, argv, a);
 
-    helper_print_arguments(a);
+    misc_print_arguments(a);
 
     if (a->help) {
         show_help();

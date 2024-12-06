@@ -13,7 +13,7 @@ You can create either one or multiples.
 #include <time.h>
 #include <stdbool.h>
 #include "sim/types.h"
-#include "helper.h"
+#include "sim/misc.h"
 
 #define ZERO_ASCII 48
 #define MAX_WAIT_TIME_SECONDS 300
@@ -37,7 +37,7 @@ Call *call_create_random(int id, time_t call_start, time_t call_end) {
     c->tel[10] = '\0';
 
     c->id = id;
-    char *c_name = helper_get_random_name_from_file(NAMES_PATH, c->client_name);
+    char *c_name = misc_get_random_name_from_file(NAMES_PATH, c->client_name);
     c->client_name = c_name;
     c->wait_time = -1; // Calculated at runtime
     c->call_start = call_start;
@@ -59,11 +59,11 @@ Call **call_create_n_random(
 
     time_t prev_call = shift_start;
     for (int i=0; i< n; i++) {
-        int call_start_delta = (int)MAX_CALL_INTERVAL_SECONDS*helper_gen_poisson(lamba, i==0);
-        int call_end_delta = (int)MAX_CALL_TIME_SECONDS*helper_gen_uniform(minsrv, maxsrv, false);
+        int call_start_delta = (int)MAX_CALL_INTERVAL_SECONDS*misc_gen_poisson(lamba, i==0);
+        int call_end_delta = (int)MAX_CALL_TIME_SECONDS*misc_gen_uniform(minsrv, maxsrv, false);
 
-        time_t call_start = helper_add_seconds(prev_call, call_start_delta);
-        time_t call_end = helper_add_seconds(call_start, call_end_delta);
+        time_t call_start = misc_add_seconds(prev_call, call_start_delta);
+        time_t call_end = misc_add_seconds(call_start, call_end_delta);
 
         calls[i] = call_create_random(i, call_start, call_end);
 

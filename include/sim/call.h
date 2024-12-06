@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "sim/types.h"
-#include "helper.h"
+#include "sim/misc.h"
 
 Call *call_create_random(int id, time_t call_start, time_t call_end);
 
