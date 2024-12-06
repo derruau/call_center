@@ -1,7 +1,7 @@
-#include "../include/helper.h"
-#include "../include/argparse/parser.h"
-#include "../include/call.h"
-#include "../include/simulation.h"
+#include "helper.h"
+#include "argparse/parser.h"
+#include "call.h"
+#include "simulation.h"
 
 #define PROGRAM_NAME "call_center"
 #define PROGRAM_VERSION "1.0"

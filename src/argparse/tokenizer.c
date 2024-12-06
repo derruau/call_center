@@ -28,7 +28,7 @@ and more easily processable data type.
 #include <stdio.h>
 #include <stdlib.h>
 #include <regex.h>
-#include "../../include/argparse/types.h"
+#include "argparse/types.h"
 
 
 #define TOKENIZER_GENERAL_ERROR 410

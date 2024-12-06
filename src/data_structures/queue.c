@@ -1,4 +1,4 @@
-#include "../../include/call.h"
+#include "call.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>

@@ -16,7 +16,7 @@ callbacks and how they integrate with the program.
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../../include/argparse/types.h"
+#include "argparse/types.h"
 
 // Duration prefix definition
 #define SECONDS 's'

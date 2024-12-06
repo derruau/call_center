@@ -40,9 +40,9 @@ $(BUILD_DIR)/%.c.o: %.c
 clean:
 	@rm -r $(BUILD_DIR)
 	@mkdir $(BUILD_DIR) 
-	@echo Cleaned build directory!
+	@echo Cleaned build directoryc !
 
-.PHONY: debug
+.PHONY: debugc 
 debug: clean
 debug: CPPFLAGS += -ggdb
 debug: $(BUILD_DIR)/$(TARGET_EXEC)

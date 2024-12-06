@@ -29,10 +29,10 @@ Remarks:
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../include/argparse/tokenizer.h"
-#include "../../include/argparse/lexer.h"
-#include "../../include/argparse/callbacks.h"
-#include "../../include/argparse/types.h"
+#include "argparse/tokenizer.h"
+#include "argparse/lexer.h"
+#include "argparse/callbacks.h"
+#include "argparse/types.h"
 
 #define TOKENIZER_ERROR 401
 #define LEXER_ERROR 402

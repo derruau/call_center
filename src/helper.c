@@ -1,7 +1,7 @@
-#include "../include/queue.h"
-#include "../include/stack.h"
-#include "../include/call.h"
-#include "../include/argparse/types.h"
+#include "queue.h"
+#include "stack.h"
+#include "call.h"
+#include "argparse/types.h"
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
