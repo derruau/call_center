@@ -1,6 +1,7 @@
 #include "../include/helper.h"
 #include "../include/args.h"
 #include "../include/call.h"
+#include "../include/simulation.h"
 
 #define PROGRAM_NAME "call_center"
 #define PROGRAM_VERSION "1.0"
@@ -48,6 +49,7 @@ void show_version() {
 //TODO: add documentation to the code
 //TODO: Make the functions have a more consistent style
 //TODO: standardize the name of the function's arguments
+//TODO: add --quiet option, --output-file option
 int main(int argc, char *argv[]) {
 
     // Parses the arguments into 'a'. If you wish to see
@@ -66,7 +68,8 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-
+    // 1. Perform the simulation
+    // 2. Print the eventual result
 
     return 0;
 
