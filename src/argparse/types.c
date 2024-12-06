@@ -128,12 +128,12 @@ typedef struct {
     lexer_callback cb;
 
     // Number of value tokens after the flag
-    int param_number;
+    int number_of_values;
     // Type of each Value Parameter. A parameter can be of multiple types,
     // so each int is the Bitwise-OR of all the types he can be
     // For example: if the parameter can be a FLOAT or an INT the Value will be
     // equal to FLOAT | INT
-    int param_type[];
+    int values_type[];
 } Rule;
 
 typedef struct {

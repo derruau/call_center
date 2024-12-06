@@ -73,10 +73,10 @@ Rule *lexer_init_rule(char *full_name, char abv, int param_number, int param_typ
     e->full_name = full_name;
     e->has_abv = abv == '\0' ? 0 : 1;
     if (e->has_abv) e->abv = abv;
-    e->param_number = param_number;
+    e->number_of_values = param_number;
     
     for (int i=0; i < param_number; i++) {
-        e->param_type[i] = param_type[i];
+        e->values_type[i] = param_type[i];
     }
 
     e->cb = cb;
@@ -144,15 +144,15 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
 
         if (tokens[i].type == FLAG) {
             Rule *e = _lexer_get_rule_from_flag_name(syntax, tokens[i].data.f->name);
-            Token **relevant_tokens = malloc(sizeof(Token*)*e->param_number);
+            Token **relevant_tokens = malloc(sizeof(Token*)*e->number_of_values);
 
-            for (int j = 0; j < e->param_number; j++) {
+            for (int j = 0; j < e->number_of_values; j++) {
                 if (i + j + 1 >= tokens_size || tokens[i + j + 1].type != VALUE)  {
                     printf(BAD_SYNTAX_ERROR_MESSAGE);
                     exit(BAD_SYNTAX_ERROR);
                 }
                 // If the token has a valid data type 
-                if (e->param_type[j] & tokens[i + j + 1].data.v->type) {
+                if (e->values_type[j] & tokens[i + j + 1].data.v->type) {
                     relevant_tokens[j] = &tokens[i + j +1];
                 } else {
                     printf(BAD_SYNTAX_ERROR_MESSAGE);
@@ -163,7 +163,7 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
             // Calling the callback
             e->cb(arguments, relevant_tokens);
 
-            i += e->param_number + 1;
+            i += e->number_of_values + 1;
             continue;
         }
 
