@@ -16,7 +16,7 @@ If you don't know what a Lexer is:
 
 
 
-For definitions and explanations about Rules and Syntax, please see arg_types.c's header
+For definitions and explanations about Rules and Syntax, please see parser.c's header
 comment.
 
 The General Syntax that this parser matches is the following (in Regex notation):

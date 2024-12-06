@@ -33,7 +33,7 @@ void show_help() {
     "  Each TIME parameter is written like so: [NUMBER][UNIT]\n"
     "  Where:\n"
     "    - NUMBER is a whole number\n"
-    "    - UNIT is a unit of time (s: seconds, m: minutes,, h:hours, d: days,\n"
+    "    - UNIT is a unit of time (s: seconds, m: minutes, h:hours, d: days,\n"
     "     w: week, M: month, y: year)\n"
     "  Example: The Duration Format 2s:4d means that the minimum duration is 2\n"
     "           seconds and the maximum duration is 4 days.\n",

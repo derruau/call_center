@@ -1,11 +1,10 @@
 #ifndef HEADER_HELPER
 #define HEADER_HELPER
 
-#include "queue.h"
-#include "stack.h"
-#include "call.h"
+#include <time.h>
+#include <stdbool.h>
+#include "sim/types.h"
 #include "argparse/types.h"
-#include <stdio.h>
 
 void helper_print_call(Call *c);
 

@@ -1,11 +1,9 @@
-#include "queue.h"
-#include "stack.h"
-#include "call.h"
-#include "argparse/types.h"
 #include <stdio.h>
-#include <math.h>
 #include <time.h>
 #include <string.h>
+#include <stdbool.h>
+#include "sim/types.h"
+#include "argparse/types.h"
 
 #define INVALID_PATH 301
 

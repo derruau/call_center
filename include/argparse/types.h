@@ -1,5 +1,5 @@
-#ifndef ARG_TYPES
-#define ARG_TYPES
+#ifndef ARGPARSE_TYPES
+#define ARGPARSE_TYPES
 
 #include <time.h>
 

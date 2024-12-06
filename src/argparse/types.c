@@ -10,7 +10,7 @@ The types are organised by the file would normally be defined in.
 TOKENIZER types:
     The idea behind all those types is to have a single struct (Token) that can contain all data
     types and differenciate between a FLAG and a VALUE.
-        - A FLAG is a strings arguments that start matches the flag type definition (see Tokenizer.c) 
+        - A FLAG is a strings arguments that start matches the flag type definition (see tokenizer.c) 
         - A VALUE is a string argument that matches any type definition that is not a FLAG
     
     The Token type is structured like this:

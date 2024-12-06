@@ -3,7 +3,7 @@
 This file transforms the string arguments into what's called Tokens.
 
 If you don't know what is Token is:
-    To understand what a Token is, let's look at an example. SUppose you want to evaluate a 
+    To understand what a Token is, let's look at an example. Suppose you want to evaluate a 
     mathematical expression from the string: "3 + 5"
     A Tokenizer will look at the string and classify each parts of it:
         - '3' will be classified as a number
