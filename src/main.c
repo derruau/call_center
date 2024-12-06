@@ -1,5 +1,5 @@
 #include "../include/helper.h"
-#include "../include/args.h"
+#include "../include/argparse/parser.h"
 #include "../include/call.h"
 #include "../include/simulation.h"
 
@@ -18,6 +18,7 @@ void show_help() {
     "Options:\n"
     "  -h --help            Show this screen.\n"
     "  -v --version         Show version.\n"
+    "  -q --quiet           Doesn't print anything to the screen\n"
     "  -l --lambda          Lambda parameter of a Poisson Law. [default: TODO]\n"
     "  -s --shift           The call centers shift opening and closing hours in \n"
     "                       duration format (see bellow).\n"
@@ -55,8 +56,10 @@ int main(int argc, char *argv[]) {
     // Parses the arguments into 'a'. If you wish to see
     // The structure of Arguments, please refer to
     // argument_parsing/arg_types.c
-    Arguments *a = args_create_arguments();
-    int arg_parsing_error = args_handle(argc, argv, a);
+    Arguments *a = parser_create_arguments();
+    int arg_parsing_error = parser_parse_args(argc, argv, a);
+
+    helper_print_arguments(a);
 
     if (a->help) {
         show_help();

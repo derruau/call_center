@@ -43,6 +43,7 @@ typedef struct s_token {
 typedef struct s_arguments{
     int help;
     int version;
+    int quiet;
     float lambda;
     int operators;
     int number_of_days;

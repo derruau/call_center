@@ -16,7 +16,7 @@ callbacks and how they integrate with the program.
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../../include/arg_types.h"
+#include "../../include/argparse/types.h"
 
 // Duration prefix definition
 #define SECONDS 's'
@@ -83,6 +83,10 @@ void cb_help(Arguments *arguments, Token **t) {
 
 void cb_version(Arguments *arguments, Token **t) {
     arguments->version = 1;
+}
+
+void cb_quiet(Arguments *arguments, Token **t) {
+    arguments->quiet = 1;
 }
 
 void cb_lambda(Arguments *arguments, Token **t) {

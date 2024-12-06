@@ -1,7 +1,7 @@
 #include "../include/queue.h"
 #include "../include/stack.h"
 #include "../include/call.h"
-#include "../include/arg_types.h"
+#include "../include/argparse/types.h"
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
@@ -121,6 +121,7 @@ void helper_print_arguments(Arguments *a) {
     printf("Argument { \n");
     printf("   int help: %i\n", a->help);
     printf("   int version: %i\n", a->version);
+    printf("   int quiet: %i\n", a->quiet);
     printf("   float lambda: %f\n", a->lambda);
     printf("   int operators: %i\n", a->operators);
     printf("   int number_of_days: %i\n", a->number_of_days);

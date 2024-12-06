@@ -34,6 +34,7 @@ Usage:
 Options:
   -h --help            Show this screen.
   -v --version         Show version.
+  -q --quiet           Doesn't print anything to the screen
   -l --lambda          Lambda parameter of a Poisson Law. [default: TODO]
   -s --shift           The call centers shift opening and closing hours in 
                        duration format (see bellow).

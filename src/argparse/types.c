@@ -94,11 +94,12 @@ typedef struct s_token {
     _token_data data;
 } Token;
 
-//================ args.c types ================
+//================ parser.c types ================
 
 typedef struct s_arguments{
     int help;
     int version;
+    int quiet;
     float lambda;
     int operators;
     int number_of_days;

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "arg_types.h"
+#include "types.h"
 
 Syntax *lexer_init_syntax();
 

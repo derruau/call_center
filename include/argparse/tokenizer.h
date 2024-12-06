@@ -1,7 +1,7 @@
 #ifndef TOKENIZER
 #define TOKENIZER
 
-#include "arg_types.h"
+#include "types.h"
 
 void tokenizer_print_token(Token token);
 
