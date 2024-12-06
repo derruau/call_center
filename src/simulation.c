@@ -27,7 +27,7 @@ struct tm* convert_time(time_t* t)
 void start_simulation(Call **clients, int clients_size)
 {
    FILE*  fichier= fopen(nomFichier, "w" ) ;
-  /* fprintf(fichier, "ID client  ");
+   /*fprintf(fichier, "ID client  ");
    fprintf(fichier, "Nom  ");
    fprintf(fichier,"Heure d'arrivée  ");
    fprintf(fichier, "Durée d'attente  ");
@@ -43,12 +43,12 @@ void start_simulation(Call **clients, int clients_size)
       fprintf(fichier, "%d", clients[i]->id);
       fprintf(fichier, "%s", clients[i]->client_name);
       fprintf(fichier, "%d:%d:%d", moment_deb->tm_hour, moment_deb->tm_min, moment_deb->tm_sec );
-      fprintf(fichier, "%d", clients[i]->wait_time);
+      fprintf(fichier, "%ld", clients[i]->wait_time);
       fprintf(fichier, "%d:%d:%d", moment_fin->tm_hour, moment_fin->tm_min, moment_fin->tm_sec);; 
       
 
 
    }
-   fclose(fichier);
+   //fclose(fichier);
 }
 

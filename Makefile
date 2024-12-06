@@ -4,7 +4,7 @@ BUILD_DIR := ./build
 SRC_DIR := ./src
 HEADER_DIR := ./include
 
-FIND_ZANA := C:\msys64\usr\bin\find.exe
+FIND_ZANA := find#C:\msys64\usr\bin\find.exe
 
 # Recursively finds any C files in $(SRC_DIR) 
 SRCS := $(shell $(FIND_ZANA) $(SRC_DIR) -name '*.c')

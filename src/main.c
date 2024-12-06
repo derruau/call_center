@@ -2,7 +2,7 @@
 #include"../include/simulation.h"
 #include <stdlib.h>
 #include <stdio.h>
-//#include "../include/args.h"
+#include "../include/args.h"
 #include "../include/call.h"
 // #define lambda 1
 // #define minsrv 2 // debut du service 
@@ -16,13 +16,13 @@ int main(int argc, char *argv[]) {
     // Parses the arguments into 'a'. If you wish to see
     // The structure of Arguments, please refer to
     // argument_parsing/arg_types.c
-    //Arguments *a = args_create_arguments();
-    //int arg_parsing_error = args_handle(argc, argv, a);
+    Arguments *a = args_create_arguments();
+    int arg_parsing_error = args_handle(argc, argv, a);
 
 
-    //helper_print_arguments(a);
+    helper_print_arguments(a);
 
-    //Call **c = call_create_n_random(10, a->shift_opening, a->shift_closing, a->lambda, a->minsrv, a->maxsrv);
+    Call **c = call_create_n_random(10, a->shift_opening, a->shift_closing, a->lambda, a->minsrv, a->maxsrv);
 
     //for (int i=0; i<10; i++) {
     //    helper_print_call(c[i]);
@@ -36,5 +36,6 @@ int main(int argc, char *argv[]) {
     int v2 = 2;
     int v3 = 3;
     int v4 = 4;
+    //start_simulation(c,  10);
 
 }
