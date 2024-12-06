@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../include/args.h"
-#include "../include/call.h"
+//#include "../include/call.h"
 // #define lambda 1
 // #define minsrv 2 // debut du service 
 // #define maxsrv 5 // fin du service 
@@ -22,7 +22,8 @@ int main(int argc, char *argv[]) {
 
     helper_print_arguments(a);
 
-    Call **c = call_create_n_random(10, a->shift_opening, a->shift_closing, a->lambda, a->minsrv, a->maxsrv);
+    Call **c;
+    c=call_create_n_random(10, a->shift_opening, a->shift_closing, a->lambda, a->minsrv, a->maxsrv);
 
     //for (int i=0; i<10; i++) {
     //    helper_print_call(c[i]);
@@ -36,6 +37,6 @@ int main(int argc, char *argv[]) {
     int v2 = 2;
     int v3 = 3;
     int v4 = 4;
-    //start_simulation(c,  10);
+    start_simulation(c,  10);
 
 }

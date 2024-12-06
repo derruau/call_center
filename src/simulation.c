@@ -17,7 +17,7 @@ typedef struct
 } Tim;
 
 struct tm* convert_time(time_t* t)
- {
+{
    struct tm *T;
    T=localtime(t);
    
@@ -26,7 +26,7 @@ struct tm* convert_time(time_t* t)
 
 void start_simulation(Call **clients, int clients_size)
 {
-   FILE*  fichier= fopen(nomFichier, "w" ) ;
+   FILE*  fichier= fopen(nomFichier, "w+" ) ;
    /*fprintf(fichier, "ID client  ");
    fprintf(fichier, "Nom  ");
    fprintf(fichier,"Heure d'arrivée  ");
@@ -35,20 +35,22 @@ void start_simulation(Call **clients, int clients_size)
    fprintf(fichier, "Heure de fin de service  ");*/
    struct tm *moment_deb;
    struct tm *moment_fin;
+   struct tm *wait; 
    for (int i=0; i<clients_size; i++ )
    {
       moment_deb= convert_time(&clients[i]->call_start);
-      moment_fin= convert_time(&clients[i]->call_start);     
+      moment_fin= convert_time(&clients[i]->call_end );  
+      wait = convert_time(&clients[i]->wait_time);   
       fprintf(fichier, "\n");
-      fprintf(fichier, "%d", clients[i]->id);
-      fprintf(fichier, "%s", clients[i]->client_name);
-      fprintf(fichier, "%d:%d:%d", moment_deb->tm_hour, moment_deb->tm_min, moment_deb->tm_sec );
-      fprintf(fichier, "%ld", clients[i]->wait_time);
-      fprintf(fichier, "%d:%d:%d", moment_fin->tm_hour, moment_fin->tm_min, moment_fin->tm_sec);; 
-      
+      fprintf(fichier, "%d  ", clients[i]->id);
+      fprintf(fichier, "%s  ", clients[i]->tel);
+      fprintf(fichier, "%s  ", clients[i]->client_name);
+      fprintf(fichier, "%d:%d:%d  ", moment_deb->tm_hour, moment_deb->tm_min, moment_deb->tm_sec );
+      fprintf(fichier, "%d:%d:%d  ", moment_fin->tm_hour, moment_fin->tm_min, moment_fin->tm_sec);
+      fprintf(fichier, "%d:%d:%d  ", wait->tm_hour, wait->tm_min, wait->tm_sec);
 
 
    }
-   //fclose(fichier);
+   fclose(fichier);
 }
 
