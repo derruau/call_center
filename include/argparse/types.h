@@ -82,6 +82,8 @@ typedef struct {
 typedef struct {
     int max_size;
     int current_size;
+    
+    // 's' contains the list of all the Rules.
     // A hash table would be better because that would mean
     // instant access time but with small syntax size it's fine.
     Rule **s;

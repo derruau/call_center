@@ -27,11 +27,15 @@ callbacks and how they integrate with the program.
 #define MONTH 'M'
 #define YEAR 'y'
 
+// TODO: find a better way to remove tm_gmtoff that is Windows-compatible!!
+// Should not be used outside of this file.
 // Converts DURATION_UNIT Token data to time_tZ
-time_t duration_unit_to_time(char* s) {
+time_t _cb_duration_unit_to_time(char* s) {
     size_t l = strlen(s);
 
     // Initalization of t to the epoch
+    // The hard thing here is that time_t's unit is platform dependent
+    // It is NOT guaranteed to be in seconds!
     time_t epoch = 0;
     struct tm *t = gmtime(&epoch);
     time_t normalization_factor = mktime(t);
@@ -90,35 +94,32 @@ void cb_quiet(Arguments *arguments, Token **t) {
 }
 
 void cb_lambda(Arguments *arguments, Token **t) {
-    // There is only one argument with this callback
     if (t[0]->data.v->type == INT) arguments->lambda = *(int*) t[0]->data.v->data;
     else arguments->lambda = *(float*)t[0]->data.v->data;
 }
 
 void cb_shift(Arguments *arguments, Token **t) {
     char *_otmp = (char*)t[0]->data.v->data;
-    arguments->shift_opening = duration_unit_to_time(_otmp);
+    arguments->shift_opening = _cb_duration_unit_to_time(_otmp);
 
 
     char *_ctmp = (char*)t[1]->data.v->data;
-    arguments->shift_closing = duration_unit_to_time(_ctmp);
+    arguments->shift_closing = _cb_duration_unit_to_time(_ctmp);
 }
 
 void cb_duration(Arguments *arguments, Token **t) {
     char *minsrv = (char*)t[0]->data.v->data;
-    arguments->minsrv = duration_unit_to_time(minsrv);
+    arguments->minsrv = _cb_duration_unit_to_time(minsrv);
 
 
     char *maxsrv = (char*)t[1]->data.v->data;
-    arguments->maxsrv = duration_unit_to_time(maxsrv);
+    arguments->maxsrv = _cb_duration_unit_to_time(maxsrv);
 }
 
 void cb_number_of_days(Arguments *arguments, Token **t) {
-    // There is only one argument with this callback 
     arguments->number_of_days = *(int*)t[0]->data.v->data;
 }
 
 void cb_operators(Arguments *arguments, Token **t) {
-    // There is only one argument with this callback 
     arguments->operators = *(int*)t[0]->data.v->data;
 }

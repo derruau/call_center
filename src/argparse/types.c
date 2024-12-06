@@ -1,5 +1,5 @@
 /* 
-========================================== ARG_TYPES.C ==========================================
+========================================== TYPES.C ==========================================
 This file is where all the types used in the Argument Parser are defined.
 
 They are not defined in their respective relevant files because that would create circular
@@ -55,7 +55,7 @@ LEXER types:
 
     A Rule also needs a Callback which is a function that takes in an Argument struct,
     and the Tokens corresponding to it's VALUES and puts the Tokens data into the Argument struct.
-========================================== ARG_TYPES.C ==========================================
+========================================== TYPES.C ==========================================
 */
 
 #include <time.h>

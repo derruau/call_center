@@ -8,7 +8,7 @@
 
 Syntax *lexer_init_syntax();
 
-Rule *lexer_init_rule(char *full_name, char abv, int param_number, int param_type[], lexer_callback cb);
+Rule *lexer_init_rule(char *full_name, char abv, int number_of_values, int value_type[], lexer_callback cb);
 
 int lexer_add_rule_to_syntax(Syntax *syntax, Rule *expression );
 
