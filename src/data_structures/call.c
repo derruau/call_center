@@ -13,7 +13,7 @@
 float helper_gen_poisson(float lambda, bool seed);
 float helper_gen_uniform(float min, float max, bool seed);
 time_t helper_add_seconds(time_t t1, int t2);
-char* helper_get_random_name_from_file(char *path);
+char* helper_get_random_name_from_file(char *path, char* name_ptr);
 
 typedef struct call {
     int id;
@@ -26,7 +26,8 @@ typedef struct call {
 
 //TODO: Add client name
 Call *call_create_random(int id, time_t call_start, time_t call_end) {
-    Call *c = malloc(sizeof(Call));
+
+    Call *c = malloc(sizeof(Call) + 2*sizeof(char*));
 
     c->tel = malloc(sizeof(char)*11);
     c->tel[0] = '0';
@@ -38,7 +39,8 @@ Call *call_create_random(int id, time_t call_start, time_t call_end) {
     c->tel[10] = '\0';
 
     c->id = id;
-    c->client_name = helper_get_random_name_from_file(NAMES_PATH);
+    char *c_name = helper_get_random_name_from_file(NAMES_PATH, c->client_name);
+    c->client_name = c_name;
     c->wait_time = -1; // Calculated at runtime
     c->call_start = call_start;
     c->call_end = call_end;

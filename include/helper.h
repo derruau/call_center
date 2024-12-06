@@ -19,7 +19,7 @@ float helper_gen_uniform(float min, float max, bool seed);
 
 time_t helper_add_seconds(time_t t1, int t2);
 
-char* helper_get_random_name_from_file(char *path);
+char* helper_get_random_name_from_file(char *path, char* name_ptr);
 
 void helper_print_arguments(Arguments *a);
 

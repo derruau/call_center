@@ -60,6 +60,13 @@ Duration Format:
 - Each function is prefixed with the name of the file/struct it's operating on. For example if I want to make the function that dequeues a value for a queue data structure, I name the function 'queue_dequeue'.
 - Each file has ONE and only ONE purpose. If I need two different 'components', I put them in different files.
 
+## Important
+It is **extremely important** that you only **seed once per execution of the program**!
+
+If you do not **seed once per execution of the program** I will personnally hunt you down and make you write a personnal letter of apology to the person who had to debug the abomination that **YOU** created!
+
+More seriously: when generating an array of random values, seeding more than one time by doing ``srand(time(NULL));`` will make the same data over and over again because the ``time`` function returns the time in seconds and the program obiously takes a lot less than one second to execute!! SO BY SEEDING MORE THAN ONCE YOU EFFECTIVELY RESET THE RANDOM NUMBER GENERATOR EVERY TIME YOU GENERATE DATA AHHHHHH WHY DID I MAKE THIS MISTAKE AND WASTE SO MUCH TIME AAAAHAHHH!!!!!!
+
 # Error Codes
 
 If the program is well made, you shouldn't encounter them, however in case you do here's what they mean:

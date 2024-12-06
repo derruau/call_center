@@ -77,7 +77,7 @@ time_t helper_add_seconds(time_t t1, int t2) {
     return result;
 }
 
-char* helper_get_random_name_from_file(char *path) {
+char* helper_get_random_name_from_file(char *path, char* name_ptr) {
     FILE *f = fopen(path, "r");
 
     if (f == NULL) exit(INVALID_PATH);
@@ -86,7 +86,6 @@ char* helper_get_random_name_from_file(char *path) {
     long size = ftell(f); // Gets the position of the file pointer
  
     // Sets the position to a random character of the file
-    srand(time(NULL));
     long start_pos = (long)(rand() % (size - 1));
     fseek(f, start_pos, SEEK_SET);
 
@@ -105,10 +104,14 @@ char* helper_get_random_name_from_file(char *path) {
     // String concatenation
     size_t name_size = strlen(name);
     size_t surname_size = strlen(surname);
-    char *full_name = malloc(sizeof(char)* (name_size + surname_size) );
+    char *full_name = malloc(sizeof(char)* (name_size + surname_size + 1) );
     strcpy(full_name, name);
     strcat(full_name, " ");
     strcat(full_name, surname);
+
+
+    name_ptr = malloc(sizeof(char)* (name_size + surname_size) );
+    strcpy(name_ptr, full_name);
 
     return full_name;
     

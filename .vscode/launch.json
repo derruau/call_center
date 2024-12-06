@@ -11,9 +11,9 @@
             "program": "${workspaceFolder}/build/queue_project",
             "args": [
                 "-s",
-                "45m:78M",
+                "6h:18h",
                 "-d",
-                "41s:32s",
+                "30s:5m",
                 "bruhmoment"
             ],
             "stopAtEntry": false,
