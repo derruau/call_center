@@ -34,6 +34,7 @@ Usage:
 Options:
   -h --help            Show this screen.
   -v --version         Show version.
+  -q --quiet           Doesn't print anything to the screen
   -l --lambda          Lambda parameter of a Poisson Law. [default: TODO]
   -s --shift           The call centers shift opening and closing hours in 
                        duration format (see bellow).
@@ -48,7 +49,7 @@ Duration Format:
   Each TIME parameter is written like so: [NUMBER][UNIT]
   Where:
     - NUMBER is a whole number
-    - UNIT is a unit of time (s: seconds, m: minutes,, h:hours, d: days,
+    - UNIT is a unit of time (s: seconds, m: minutes, h:hours, d: days,
      w: week, M: month, y: year)
   Example: The Duration Format 2s:4d means that the minimum duration is 2
            seconds and the maximum duration is 4 days.

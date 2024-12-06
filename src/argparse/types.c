@@ -1,5 +1,5 @@
 /* 
-========================================== ARG_TYPES.C ==========================================
+========================================== TYPES.C ==========================================
 This file is where all the types used in the Argument Parser are defined.
 
 They are not defined in their respective relevant files because that would create circular
@@ -10,7 +10,7 @@ The types are organised by the file would normally be defined in.
 TOKENIZER types:
     The idea behind all those types is to have a single struct (Token) that can contain all data
     types and differenciate between a FLAG and a VALUE.
-        - A FLAG is a strings arguments that start matches the flag type definition (see Tokenizer.c) 
+        - A FLAG is a strings arguments that start matches the flag type definition (see tokenizer.c) 
         - A VALUE is a string argument that matches any type definition that is not a FLAG
     
     The Token type is structured like this:
@@ -55,7 +55,7 @@ LEXER types:
 
     A Rule also needs a Callback which is a function that takes in an Argument struct,
     and the Tokens corresponding to it's VALUES and puts the Tokens data into the Argument struct.
-========================================== ARG_TYPES.C ==========================================
+========================================== TYPES.C ==========================================
 */
 
 #include <time.h>
@@ -94,11 +94,12 @@ typedef struct s_token {
     _token_data data;
 } Token;
 
-//================ args.c types ================
+//================ parser.c types ================
 
 typedef struct s_arguments{
     int help;
     int version;
+    int quiet;
     float lambda;
     int operators;
     int number_of_days;
@@ -127,12 +128,12 @@ typedef struct {
     lexer_callback cb;
 
     // Number of value tokens after the flag
-    int param_number;
+    int number_of_values;
     // Type of each Value Parameter. A parameter can be of multiple types,
     // so each int is the Bitwise-OR of all the types he can be
     // For example: if the parameter can be a FLOAT or an INT the Value will be
     // equal to FLOAT | INT
-    int param_type[];
+    int values_type[];
 } Rule;
 
 typedef struct {

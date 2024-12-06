@@ -5,15 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-
-typedef struct call {
-    int id;
-    char *tel;
-    char *client_name;
-    time_t call_start;
-    time_t wait_time;
-    time_t call_end;
-} Call;
+#include "sim/types.h"
+#include "sim/misc.h"
 
 Call *call_create_random(int id, time_t call_start, time_t call_end);
 

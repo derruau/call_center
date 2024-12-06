@@ -1,10 +1,9 @@
-#ifndef ARG_TYPES
-#define ARG_TYPES
+#ifndef ARGPARSE_TYPES
+#define ARGPARSE_TYPES
 
 #include <time.h>
 
 //================ tokenizer.c types ================
-
 
 typedef enum _e_value_type {
     INT = 0b00001,
@@ -43,6 +42,7 @@ typedef struct s_token {
 typedef struct s_arguments{
     int help;
     int version;
+    int quiet;
     float lambda;
     int operators;
     int number_of_days;
@@ -71,17 +71,19 @@ typedef struct {
     lexer_callback cb;
 
     // Number of value tokens after the flag
-    int param_number;
+    int number_of_values;
     // Type of each Value Parameter. A parameter can be of multiple types,
     // so each int is the Bitwise-OR of all the types he can be
     // For example: if the parameter can be a FLOAT or an INT the Value will be
     // equal to FLOAT | INT
-    int param_type[];
+    int values_type[];
 } Rule;
 
 typedef struct {
     int max_size;
     int current_size;
+    
+    // 's' contains the list of all the Rules.
     // A hash table would be better because that would mean
     // instant access time but with small syntax size it's fine.
     Rule **s;

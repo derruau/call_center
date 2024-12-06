@@ -3,7 +3,7 @@
 This file transforms the string arguments into what's called Tokens.
 
 If you don't know what is Token is:
-    To understand what a Token is, let's look at an example. SUppose you want to evaluate a 
+    To understand what a Token is, let's look at an example. Suppose you want to evaluate a 
     mathematical expression from the string: "3 + 5"
     A Tokenizer will look at the string and classify each parts of it:
         - '3' will be classified as a number
@@ -28,7 +28,7 @@ and more easily processable data type.
 #include <stdio.h>
 #include <stdlib.h>
 #include <regex.h>
-#include "../../include/arg_types.h"
+#include "argparse/types.h"
 
 
 #define TOKENIZER_GENERAL_ERROR 410

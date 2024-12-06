@@ -16,7 +16,7 @@ If you don't know what a Lexer is:
 
 
 
-For definitions and explanations about Rules and Syntax, please see arg_types.c's header
+For definitions and explanations about Rules and Syntax, please see parser.c's header
 comment.
 
 The General Syntax that this parser matches is the following (in Regex notation):
@@ -38,7 +38,7 @@ Remarks:
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#include "../../include/arg_types.h"
+#include "argparse/types.h"
 
 
 #define CANNOT_ADD_SYNTAX_ERROR 421
@@ -64,19 +64,19 @@ Syntax *lexer_init_syntax() {
     return s;
 }
 
-//TODO: rename parameters for better consistency
 // Returns a new Rule with the parameters you've passed it
 // See arg_types.c for explanations about what is a Rule
-Rule *lexer_init_rule(char *full_name, char abv, int param_number, int param_type[], lexer_callback cb) {
-    Rule *e = malloc(sizeof(Rule) + param_number*sizeof(Rule));
+Rule *lexer_init_rule(char *full_name, char abv, int number_of_values, int value_type[], lexer_callback cb) {
+    Rule *e = malloc(sizeof(Rule) + number_of_values*sizeof(Rule));
 
     e->full_name = full_name;
     e->has_abv = abv == '\0' ? 0 : 1;
-    if (e->has_abv) e->abv = abv;
-    e->param_number = param_number;
     
-    for (int i=0; i < param_number; i++) {
-        e->param_type[i] = param_type[i];
+    if (e->has_abv) e->abv = abv;
+    e->number_of_values = number_of_values;
+    
+    for (int i=0; i < number_of_values; i++) {
+        e->values_type[i] = value_type[i];
     }
 
     e->cb = cb;
@@ -109,31 +109,31 @@ int lexer_add_rule_to_syntax(Syntax *syntax, Rule *expression ) {
 // Should not be used outside this file
 // Searches a Rule in the Syntax and returns the first
 // Rule that matches the name provided
-Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* name) {
+Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* rule_name) {
     for (int i=0; i<syntax->current_size; i++) {
-        if (strcmp(syntax->s[i]->full_name, name) == 0) {
+
+        if (strcmp(syntax->s[i]->full_name, rule_name) == 0) {
             return syntax->s[i];
         }
 
         if (syntax->s[i]->has_abv == 0) continue;
-        if (syntax->s[i]->abv == name[0]) {
-            return syntax->s[i];
-        }
+
+        if (syntax->s[i]->abv == rule_name[0]) return syntax->s[i];
     }
+
     printf(FLAG_NOT_IN_SYNTAX_MESSAGE);
     exit(FLAG_NOT_IN_SYNTAX);
 }
 
-//TODO: rename parameters for better consistency
 // The main Lexer function.
 // Checks the Tokens against the Syntax and fills up
 // the Arguments struct with the relevant informations
-int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int tokens_size) {
-
+int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int number_of_tokens) {
     int i=0;
-    while (i < tokens_size) {
+    while (i < number_of_tokens) {
+
         // Special case for the last token (i.e the path)
-        if (i == tokens_size - 1) {
+        if (i == number_of_tokens - 1) {
             if (tokens[i].type == VALUE) {
                 if (tokens[i].data.v->type == STRING) {
                     arguments->path = (char*)tokens[i].data.v->data;
@@ -144,15 +144,15 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
 
         if (tokens[i].type == FLAG) {
             Rule *e = _lexer_get_rule_from_flag_name(syntax, tokens[i].data.f->name);
-            Token **relevant_tokens = malloc(sizeof(Token*)*e->param_number);
+            Token **relevant_tokens = malloc(sizeof(Token*)*e->number_of_values);
 
-            for (int j = 0; j < e->param_number; j++) {
-                if (i + j + 1 >= tokens_size || tokens[i + j + 1].type != VALUE)  {
+            for (int j = 0; j < e->number_of_values; j++) {
+                if (i + j + 1 >= number_of_tokens || tokens[i + j + 1].type != VALUE)  {
                     printf(BAD_SYNTAX_ERROR_MESSAGE);
                     exit(BAD_SYNTAX_ERROR);
                 }
                 // If the token has a valid data type 
-                if (e->param_type[j] & tokens[i + j + 1].data.v->type) {
+                if (e->values_type[j] & tokens[i + j + 1].data.v->type) {
                     relevant_tokens[j] = &tokens[i + j +1];
                 } else {
                     printf(BAD_SYNTAX_ERROR_MESSAGE);
@@ -163,7 +163,7 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
             // Calling the callback
             e->cb(arguments, relevant_tokens);
 
-            i += e->param_number + 1;
+            i += e->number_of_values + 1;
             continue;
         }
 

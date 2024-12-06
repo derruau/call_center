@@ -3,11 +3,11 @@
 
 #include <time.h>
 
-time_t str_to_time(char* s);
-
 void cb_help(Arguments *arguments, Token **t);
 
 void cb_version(Arguments *arguments, Token **t);
+
+void cb_quiet(Arguments *arguments, Token **t);
 
 void cb_lambda(Arguments *arguments, Token **t);
 

@@ -1,6 +1,7 @@
-#include "../include/helper.h"
-#include "../include/args.h"
-#include "../include/call.h"
+#include "argparse/misc.h"
+#include "argparse/parser.h"
+#include "sim/call.h"
+#include "simulation.h"
 
 #define PROGRAM_NAME "call_center"
 #define PROGRAM_VERSION "1.0"
@@ -17,6 +18,7 @@ void show_help() {
     "Options:\n"
     "  -h --help            Show this screen.\n"
     "  -v --version         Show version.\n"
+    "  -q --quiet           Doesn't print anything to the screen\n"
     "  -l --lambda          Lambda parameter of a Poisson Law. [default: TODO]\n"
     "  -s --shift           The call centers shift opening and closing hours in \n"
     "                       duration format (see bellow).\n"
@@ -31,7 +33,7 @@ void show_help() {
     "  Each TIME parameter is written like so: [NUMBER][UNIT]\n"
     "  Where:\n"
     "    - NUMBER is a whole number\n"
-    "    - UNIT is a unit of time (s: seconds, m: minutes,, h:hours, d: days,\n"
+    "    - UNIT is a unit of time (s: seconds, m: minutes, h:hours, d: days,\n"
     "     w: week, M: month, y: year)\n"
     "  Example: The Duration Format 2s:4d means that the minimum duration is 2\n"
     "           seconds and the maximum duration is 4 days.\n",
@@ -48,13 +50,16 @@ void show_version() {
 //TODO: add documentation to the code
 //TODO: Make the functions have a more consistent style
 //TODO: standardize the name of the function's arguments
+//TODO: add --quiet option, --output-file option
 int main(int argc, char *argv[]) {
 
     // Parses the arguments into 'a'. If you wish to see
     // The structure of Arguments, please refer to
     // argument_parsing/arg_types.c
-    Arguments *a = args_create_arguments();
-    int arg_parsing_error = args_handle(argc, argv, a);
+    Arguments *a = parser_create_arguments();
+    int arg_parsing_error = parser_parse_args(argc, argv, a);
+
+    misc_print_arguments(a);
 
     if (a->help) {
         show_help();
@@ -66,7 +71,8 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-
+    // 1. Perform the simulation
+    // 2. Print the eventual result
 
     return 0;
 

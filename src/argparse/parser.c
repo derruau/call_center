@@ -1,5 +1,5 @@
 /* 
-========================================== ARGS.C ==========================================
+========================================== PARSER.C ==========================================
 This is an Argument Parser. 
 It it comprised of a Tokenizer and a Lexer.
 
@@ -8,7 +8,7 @@ program and return an Argument struct which contains the parsed arguments.
 
 
 The parser is designed to be modular. If you want to add another argument:
-    1. Add a field to the Argument struct (see arg_types.c)
+    1. Add a field to the Argument struct (see argsparse/types.c)
     2. Register the parameter to the parser syntax (see lexer_add_rule_to_syntax())
     3. Write a callback function which actually parses the relevant Tokens (if they need 
        to be parsed) and puts them in the Argument struct.
@@ -17,22 +17,22 @@ The parser is designed to be modular. If you want to add another argument:
 The Parser works like this:
     1. Definition of a Syntax (a list of allowed arguments)
     2. Tokenization the String Arguments
-    3. Syntax Verification with the Lexer: we're matching the syntax against the Tokens
+    3. Syntax Verification with the Lexer:arg_types we're matching the syntax against the Tokens
     4. Callbacks calls with their relevant Tokens to fill up the Argument struct
 
 Remarks:
     We chose not to use <argp.h> to parse arguments to make the code a little more
     interesting.
-========================================== ARGS.C ==========================================
+========================================== PARSER.C ==========================================
 */
 
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../include/tokenizer.h"
-#include "../../include/lexer.h"
-#include "../../include/callbacks.h"
-#include "../../include/arg_types.h"
+#include "argparse/tokenizer.h"
+#include "argparse/lexer.h"
+#include "argparse/callbacks.h"
+#include "argparse/types.h"
 
 #define TOKENIZER_ERROR 401
 #define LEXER_ERROR 402
@@ -50,7 +50,7 @@ Remarks:
 
 // Creates an instance of the Argument class
 // with default parameters.
-Arguments *args_create_arguments() {
+Arguments *parser_create_arguments() {
     Arguments *a = malloc(sizeof(Arguments));
 
     a->help = 0;
@@ -68,7 +68,7 @@ Arguments *args_create_arguments() {
 
 // Should not be called outside of this file.
 // This is where you add another Syntax rule.
-Syntax* _args_create_syntax() {
+Syntax* _parser_create_syntax() {
 
     Syntax *syntax = lexer_init_syntax();
     
@@ -77,6 +77,9 @@ Syntax* _args_create_syntax() {
 
     Rule *version = lexer_init_rule("version", 'v', 0, NULL, &cb_version);
     lexer_add_rule_to_syntax(syntax, version);
+
+    Rule *quiet = lexer_init_rule("quiet", 'q', 0, NULL, &cb_quiet);
+    lexer_add_rule_to_syntax(syntax, quiet);
 
     int lambda_types[] = {INT | FLOAT};
     Rule *lambda = lexer_init_rule("lambda", 'l', 1, lambda_types, &cb_lambda);
@@ -95,7 +98,7 @@ Syntax* _args_create_syntax() {
     lexer_add_rule_to_syntax(syntax, number_of_days);
 
     int operators_types[] = {INT};
-    Rule *operators =lexer_init_rule("operators", 'o', 1, operators_types, &cb_operators);
+    Rule *operators = lexer_init_rule("operators", 'o', 1, operators_types, &cb_operators);
     lexer_add_rule_to_syntax(syntax, operators);
 
     return syntax;
@@ -103,12 +106,12 @@ Syntax* _args_create_syntax() {
 }
 
 // Parses the string arguments and puts them into an Arguments struct.
-int args_handle(int argc, char *argv[], Arguments *arguments) {
+int parser_parse_args(int argc, char *argv[], Arguments *arguments) {
 
     int number_of_tokens = 0;
     Token *tokens = tokenizer_tokenize(argc, argv, &number_of_tokens);
 
-    Syntax *syntax = _args_create_syntax();
+    Syntax *syntax = _parser_create_syntax();
 
     lexer_get_arguments(syntax, tokens, arguments, number_of_tokens);
 

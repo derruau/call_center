@@ -4,14 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-
-typedef struct {
-    int front;
-    int back;
-    int size;
-    int number_of_elements;
-    void *q[];
-} Queue;
+#include "sim/types.h"
 
 Queue *queue_init(int size_of_queue);
 
