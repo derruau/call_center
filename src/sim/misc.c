@@ -55,6 +55,8 @@ void misc_print_int_queue(Queue *q) {
 }
 
 
+// TODO: remove the seed parameter and add an init_sim function
+// that calls srand()
 float misc_gen_poisson(float lambda, bool seed) {
     if (seed) srand(time(NULL));
 
@@ -71,9 +73,9 @@ float misc_gen_uniform(float min, float max, bool seed) {
     return (rand() % i) / i;
 }
 
+// Adds t1 to t2.
+// Important: t2 is in seconds!!
 time_t misc_add_seconds(time_t t1, int t2) {
-    // Adds t1 to t2.
-    // Important: t2 is in seconds!!
     struct tm *t = gmtime(&t1);
 
     t->tm_sec += t2;

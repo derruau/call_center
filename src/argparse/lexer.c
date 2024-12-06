@@ -109,16 +109,16 @@ int lexer_add_rule_to_syntax(Syntax *syntax, Rule *expression ) {
 // Should not be used outside this file
 // Searches a Rule in the Syntax and returns the first
 // Rule that matches the name provided
-Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* name) {
+Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* rule_name) {
     for (int i=0; i<syntax->current_size; i++) {
 
-        if (strcmp(syntax->s[i]->full_name, name) == 0) {
+        if (strcmp(syntax->s[i]->full_name, rule_name) == 0) {
             return syntax->s[i];
         }
 
         if (syntax->s[i]->has_abv == 0) continue;
 
-        if (syntax->s[i]->abv == name[0]) return syntax->s[i];
+        if (syntax->s[i]->abv == rule_name[0]) return syntax->s[i];
     }
 
     printf(FLAG_NOT_IN_SYNTAX_MESSAGE);

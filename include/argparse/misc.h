@@ -11,6 +11,6 @@ void misc_print_arguments(Arguments *a);
 
 void misc_print_token(Token token);
 
-void misc_print_token_list(Token *t, int size);
+void misc_print_token_list(Token *t, int number_of_tokens);
 
 #endif

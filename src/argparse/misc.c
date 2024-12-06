@@ -56,13 +56,13 @@ void misc_print_token(Token token) {
     }
 }
 
-void misc_print_token_list(Token *t, int size) {
+void misc_print_token_list(Token *t, int number_of_tokens) {
 
-    for (int i=0; i < size; i++) {
+    for (int i=0; i < number_of_tokens; i++) {
         
         misc_print_token(t[i]);
 
-        if (i == size -1) {
+        if (i == number_of_tokens -1) {
             printf("\n");
             break;
         };
