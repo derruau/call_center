@@ -25,7 +25,8 @@ Additionnaly, use ``make clean`` to make a clean build of the project in case so
     - ``C:\msys64\usr\bin``
     - ``C:\msys64\ucrt64\bin``
 6. Restart any terminal you might have open
-7. You can now compile the project using
+7. Open a MSYS2 terminal and type ``git clone https://github.com/derruau/call_center && cd call_center``
+8. You can now compile the project using
     - ``make -w`` to compile the project
     - ``make clean -w`` to clean the build directory
 
