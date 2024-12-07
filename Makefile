@@ -6,8 +6,10 @@ HEADER_DIR := ./include
 
 ifneq (,$(findstring w, $(MAKEFLAGS)))
 FIND = C:/msys64/usr/bin/find
+LNKFLAGS = -lregex
 else
 FIND = find
+LNKFLAGS = 
 endif
 
 # Recursively finds any C files in $(SRC_DIR) 
@@ -32,7 +34,7 @@ CPPFLAGS = $(INC_FLAGS) -MMD -MP
 # Final build step
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	@echo Linking...
-	@$(CXX) $(OBJS) -lregex -o $@ $(LDFLAGS)
+	@$(CXX) $(OBJS) $(LNKFLAGS) -o $@ $(LDFLAGS)
 	@echo
 	@echo Build Complete!
 

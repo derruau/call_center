@@ -11,7 +11,9 @@ callbacks and how they integrate with the program.
 ========================================== CALLBACKS.C ==========================================
 */
 
-//#define _GNU_SOURCE // We need this to call t->tm_gmtoff
+// We need this to call t->tm_gmtoff so it's
+// added by Makefile at compile time.
+//#define _GNU_SOURCE
 
 #include <time.h>
 #include <string.h>
