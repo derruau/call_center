@@ -46,7 +46,7 @@ $(BUILD_DIR)/%.c.o: %.c
 clean:
 	@rm -r $(BUILD_DIR)
 	@mkdir $(BUILD_DIR) 
-	@echo Cleaned build directoryc !
+	@echo Cleaned build directory !
 
 .PHONY: debug
 debug: clean

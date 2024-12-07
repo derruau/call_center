@@ -4,6 +4,7 @@ This project is a class assignment that aims to simulate a call center and provi
 
 # Installation
 
+## Linux and MacOS
 ```shell
 git clone https://github.com/derruau/call_center
 
@@ -11,15 +12,29 @@ cd call_center
 
 make
 ```
-
 Additionnaly, use ``make clean`` to make a clean build of the project in case something's broken
+
+## Installing on Windows
+1. Install [MSYS2](https://www.msys2.org/) (it should be the default but make sure to install the UCRT environment) 
+2. Open a MSYS2 terminal and type ``pacman -S --needed base-devel git mingw-w64-ucrt-x86_64-github-cli mingw-w64-ucrt-x86_64-toolchain``
+    - MSYS2 will prompt you to choose things but just press ``ENTER`` everytime to choose the default options
+    - You can remove ``mingw-w64-ucrt-x86_64-github-cli`` and skip to step 4 if you don't want to sign in to Github using MSYS2
+3. type ``gh auth login`` and follow the instructions to link your Github account to MSYS2
+4. In the Windows search bar, type & execute ``Edit environment variables for your account`` 
+5. Double click the PATH environment variable and add these entries to it at the end:
+    - ``C:\msys64\usr\bin``
+    - ``C:\msys64\ucrt64\bin``
+6. Restart any terminal you might have open
+7. You can now compile the project using
+    - ``make -w`` to compile the project
+    - ``make clean -w`` to clean the build directory
 
 ## Debug using VSCODE:
 To debug the program using VSCODE, use the built-in debugger:
 1. Go to the 'Run and Debug' section
-2. Select and run the 'Debug Mode' task
+2. Select and run the 'Debug Mode' task (or 'Debug Mode (Windows)' if you're on Windows)
 
-If you want to debug the program using ``gdb``, just build it with ``make debug``.
+If you want to debug the program using ``gdb``, just build it with ``make debug`` (or ``make debug -w`` on Windows)
 
 # Usage
 

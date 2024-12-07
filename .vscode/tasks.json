@@ -12,6 +12,16 @@
                 "isDefault": true
             },
             "problemMatcher": "$gcc"
+        },
+        {
+            "label": "build debug-windows",
+            "type": "shell",
+            "command": "make debug -w",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
         }
     ]
 }
