@@ -50,7 +50,7 @@ void helper_print_int_queue(Queue *q) {
 
 
 float helper_gen_poisson(float lambda, bool seed) {
-    if (seed) srand(time(NULL));
+   // if (seed) srand(time(NULL));
 
     float u = (rand() % POISSON_MAX) / POISSON_MAX;
 
@@ -58,7 +58,7 @@ float helper_gen_poisson(float lambda, bool seed) {
 } 
 
 float helper_gen_uniform(float min, float max, bool seed) {
-    if (seed) srand(time(NULL));
+    //if (seed) srand(time(NULL));
 
     int i = (int)(max - min);
 
@@ -86,7 +86,7 @@ char* helper_get_random_name_from_file(char *path) {
     long size = ftell(f); // Gets the position of the file pointer
  
     // Sets the position to a random character of the file
-    srand(time(NULL));
+    //srand(time(NULL));
     long start_pos = (long)(rand() % (size - 1));
     fseek(f, start_pos, SEEK_SET);
 

@@ -68,8 +68,10 @@ Call **call_create_n_random(
         int call_end_delta = (int)MAX_CALL_TIME_SECONDS*helper_gen_uniform(minsrv, maxsrv, false);
 
         time_t call_start = helper_add_seconds(prev_call, call_start_delta);
+        printf("%s\n", ctime(&call_start)); 
         time_t call_end = helper_add_seconds(call_start, call_end_delta);
-
+	printf("%s  ", ctime(&call_start)); 
+	printf("\n");
         calls[i] = call_create_random(i, call_start, call_end);
 
         prev_call = call_start;

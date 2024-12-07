@@ -37,6 +37,6 @@ int main(int argc, char *argv[]) {
     int v2 = 2;
     int v3 = 3;
     int v4 = 4;
-    start_simulation(c,  10);
+    simulation_register(c,  10);
 
 }
