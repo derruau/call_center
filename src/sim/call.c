@@ -58,7 +58,7 @@ Call **call_create_n_random(
     Call **calls = malloc(sizeof(Call*)*n);
 
     time_t prev_call = shift_start;
-    for (int i=0; i< n; i++) {
+    for (int i=0; i < n; i++) {
         int call_start_delta = (int)MAX_CALL_INTERVAL_SECONDS*misc_gen_poisson(lamba, i==0);
         int call_end_delta = (int)MAX_CALL_TIME_SECONDS*misc_gen_uniform(minsrv, maxsrv, false);
 

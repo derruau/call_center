@@ -21,6 +21,8 @@ float misc_gen_uniform(float min, float max, bool seed);
 
 time_t misc_add_seconds(time_t t1, int t2);
 
+time_t misc_to_seconds(int time);
+
 char* misc_get_random_name_from_file(char *path, char* name_ptr);
 
 #endif

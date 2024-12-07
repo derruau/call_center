@@ -1,7 +1,7 @@
 #include "argparse/misc.h"
 #include "argparse/parser.h"
 #include "sim/call.h"
-#include "simulation.h"
+#include "sim/simulation.h"
 
 #define PROGRAM_NAME "call_center"
 #define PROGRAM_VERSION "1.0"
@@ -72,6 +72,8 @@ int main(int argc, char *argv[]) {
     }
 
     // 1. Perform the simulation
+    SimResults *results = sim_start_simulation(a);
+
     // 2. Print the eventual result
 
     return 0;
