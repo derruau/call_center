@@ -85,6 +85,17 @@ time_t misc_add_seconds(time_t t1, int t2) {
     return result;
 }
 
+time_t misc_to_seconds(int time) {
+    time_t epoch = 0;
+    struct tm *t = gmtime(&epoch);
+    
+    t->tm_sec += time;
+    
+    time_t converted_time = mktime(t);
+
+    return converted_time;
+}
+
 char* misc_get_random_name_from_file(char *path, char* name_ptr) {
     FILE *f = fopen(path, "r");
 
