@@ -11,7 +11,7 @@ callbacks and how they integrate with the program.
 ========================================== CALLBACKS.C ==========================================
 */
 
-#define _GNU_SOURCE // We need this to call t->tm_gmtoff
+//#define _GNU_SOURCE // We need this to call t->tm_gmtoff
 
 #include <time.h>
 #include <string.h>
@@ -40,8 +40,10 @@ time_t _cb_duration_unit_to_time(char* s) {
     struct tm *t = gmtime(&epoch);
     time_t normalization_factor = mktime(t);
     t->tm_isdst = 0;
-    t->tm_gmtoff = 0;
-    t->tm_zone = "GMT";
+    #ifdef _GNU_SOURCE
+        t->tm_gmtoff = 0;
+        t->tm_zone = "GMT";
+    #endif
 
     switch (s[l - 1])
     {

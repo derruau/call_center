@@ -4,29 +4,35 @@ BUILD_DIR := ./build
 SRC_DIR := ./src
 HEADER_DIR := ./include
 
+ifneq (,$(findstring w, $(MAKEFLAGS)))
+FIND = C:/msys64/usr/bin/find
+else
+FIND = find
+endif
+
 # Recursively finds any C files in $(SRC_DIR) 
-SRCS := $(shell find $(SRC_DIR) -name '*.c')
+SRCS = $(shell $(FIND) $(SRC_DIR) -name '*.c')
 
 # Every files in $(SRCS) but as object files with extension .c.o
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+OBJS = $(SRCS:%=$(BUILD_DIR)/%.o)
 
 # Every files in $(OBJS) but as dependency files with extenion .c.d
-DEPS := $(OBJS:.o=.d)
+DEPS = $(OBJS:.o=.d)
 
 # Every folder in ./src will need to be passed to GCC so that it can find header files
-INC_DIRS := $(shell find $(HEADER_DIR) -type d)
+INC_DIRS = $(shell $(FIND) $(HEADER_DIR) -type d)
 # Add a prefix to INC_DIRS. So moduleA would become -ImoduleA
 # This makes gcc aware that those folders contain header files
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+INC_FLAGS = $(addprefix -I,$(INC_DIRS))
 
 # The -MMD and -MP flags together autogenerate Makefiles
 # These files will have .d instead of .o as the output.
-CPPFLAGS := $(INC_FLAGS) -MMD -MP
+CPPFLAGS = $(INC_FLAGS) -MMD -MP
 
 # Final build step
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	@echo Linking...
-	@$(CXX) $(OBJS) -o $@ $(LDFLAGS)
+	@$(CXX) $(OBJS) -lregex -o $@ $(LDFLAGS)
 	@echo
 	@echo Build Complete!
 
@@ -42,7 +48,7 @@ clean:
 	@mkdir $(BUILD_DIR) 
 	@echo Cleaned build directoryc !
 
-.PHONY: debugc 
+.PHONY: debug
 debug: clean
 debug: CPPFLAGS += -ggdb
 debug: $(BUILD_DIR)/$(TARGET_EXEC)
