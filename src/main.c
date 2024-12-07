@@ -47,15 +47,14 @@ void show_version() {
     printf("%s %s\n", PROGRAM_NAME, PROGRAM_VERSION);
 }
 
+//TODO: fix the bug on windows where you can't parse a DURATION
 //TODO: add documentation to the code
-//TODO: Make the functions have a more consistent style
-//TODO: standardize the name of the function's arguments
-//TODO: add --quiet option, --output-file option
+//TODO: add --output-file option
 int main(int argc, char *argv[]) {
 
     // Parses the arguments into 'a'. If you wish to see
     // The structure of Arguments, please refer to
-    // argument_parsing/arg_types.c
+    // argparse/types.c
     Arguments *a = parser_create_arguments();
     int arg_parsing_error = parser_parse_args(argc, argv, a);
 

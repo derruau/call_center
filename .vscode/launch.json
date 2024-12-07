@@ -29,6 +29,33 @@
                 }
             ],
             "preLaunchTask": "build debug"
+        },
+
+        {
+            "name": "Debug Mode (Windows)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/queue_project",
+            "args": [
+                "-s",
+                "6h:18h",
+                "-d",
+                "30s:5m",
+                "bruhmoment"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build debug-windows"
         }
     ]
 }
