@@ -93,3 +93,10 @@ Here's a table of all the file identifiers:
 |    0XX    |     1XX    |     2XX    |    3XX   |        4XX       | 5XX | 6XX | 7XX | 8XX | 9XX |
 |:---------:|:----------:|:----------:|:--------:|:----------------:|:---:|:---:|:---:|:---:|:---:|
 |   main.c  |   queue.c  |   stack.c  | helper.c | argument parsing |     |     |     |     |     | 
+
+# Problems
+
+Right now we haven't found a bug in the Linux version of the program,
+however the Windows version seems to be unable to parse a DURATION token.
+
+This issue has not yet been looked into.

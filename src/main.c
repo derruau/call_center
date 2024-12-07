@@ -47,6 +47,7 @@ void show_version() {
     printf("%s %s\n", PROGRAM_NAME, PROGRAM_VERSION);
 }
 
+//TODO: fix the bug on windows where you can't parse a DURATION
 //TODO: add documentation to the code
 //TODO: add --output-file option
 int main(int argc, char *argv[]) {
