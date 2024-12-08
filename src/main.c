@@ -1,7 +1,7 @@
 #include "argparse/misc.h"
 #include "argparse/parser.h"
 #include "sim/call.h"
-#include "simulation.h"
+#include "sim/simulation.h"
 
 #define PROGRAM_NAME "call_center"
 #define PROGRAM_VERSION "1.0"
@@ -47,7 +47,7 @@ void show_version() {
     printf("%s %s\n", PROGRAM_NAME, PROGRAM_VERSION);
 }
 
-//TODO: fix the bug on windows where you can't parse a DURATION
+//TODO: free resources at the end of the program's execution
 //TODO: add documentation to the code
 //TODO: add --output-file option
 int main(int argc, char *argv[]) {
@@ -71,6 +71,9 @@ int main(int argc, char *argv[]) {
     }
 
     // 1. Perform the simulation
+    SimResults *results = sim_start_simulation(a);
+
+    printf("yay!!\n");
     // 2. Print the eventual result
 
     return 0;

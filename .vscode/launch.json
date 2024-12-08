@@ -10,10 +10,12 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/queue_project",
             "args": [
-                "-s",
-                "6h:18h",
                 "-d",
-                "30s:5m",
+                "1m:2m",
+                "-l",
+                "0.05",
+                "-o",
+                "3",
                 "bruhmoment"
             ],
             "stopAtEntry": false,

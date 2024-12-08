@@ -48,8 +48,8 @@ typedef struct s_arguments{
     int number_of_days;
 
     // Corresponds to the -d argument
-    time_t minsrv;
-    time_t maxsrv;
+    time_t min_call_duration;
+    time_t max_call_duration;
 
     // Corresponds to the -s argument
     time_t shift_opening;

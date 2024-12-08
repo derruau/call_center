@@ -1,6 +1,7 @@
-# Build Path
+# Build Path & Debug
 build/
 bin/
+valgrind/
 
 # Prerequisites
 *.d

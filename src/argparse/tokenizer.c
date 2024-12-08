@@ -102,7 +102,7 @@ int _tokenizer_handle_duration(char *argv, Token *tokens, int tokens_pos) {
 
         strings[current_string][si] = c;
 
-        char *ns = realloc(strings[current_string], sizeof(char)*(si +1));
+        char *ns = realloc(strings[current_string], sizeof(char)*(si + 2));
         if (ns == NULL) {
             printf(CANT_TOKENIZE_DURATION_UNIT_MESSAGE);
             exit(CANT_TOKENIZE_DURATION_UNIT);
