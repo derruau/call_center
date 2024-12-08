@@ -21,7 +21,6 @@ You can create either one or multiples.
 #define MAX_CALL_INTERVAL_SECONDS 60
 #define NAMES_PATH "data/mock_client_names.csv"
 
-
 // Creates a random call
 Call *call_create_random(int id, time_t call_start, time_t call_duration) {
 
@@ -46,6 +45,7 @@ Call *call_create_random(int id, time_t call_start, time_t call_duration) {
 
     return c;
 }
+
 
 // Creates a specified number of random Call(s)
 Call **call_create_n_random(
@@ -72,6 +72,7 @@ Call **call_create_n_random(
 
     return calls;
 }
+
 
 // Frees a Call object
 void call_free(Call *c) {

@@ -31,7 +31,6 @@ char *int_to_spaces(int n) {
         emergency_string_separator[0] = ' ';
         emergency_string_separator[1] = '\0';
         return emergency_string_separator;
-        // exit(NEGATIVE_SPACES);
     } 
     char *string_separator = malloc(sizeof(char)*(n + 1));
     for (int i = 0; i < n; i++) {
@@ -42,10 +41,12 @@ char *int_to_spaces(int n) {
     return string_separator;
 }
 
+
 int save_get_number_of_digits(int n) {
     if (n < 0) return ceil(log10(-n)) + 1;
     return ceil(log10(n));
 }
+
 
 void save_call(FILE *f, Call *c, int max_length[]) {
     int id_length = save_get_number_of_digits(c->id);
@@ -83,6 +84,7 @@ void save_call(FILE *f, Call *c, int max_length[]) {
     free(start_spaces);
     free(end_spaces);
 }
+
 
 int save_calls_to_file(Arguments *arguments, SimResults *results) {
     FILE *f = fopen(arguments->path, "a");
@@ -132,6 +134,7 @@ int save_calls_to_file(Arguments *arguments, SimResults *results) {
 
     return 0;
 }
+
 
 void save_print_stats(Arguments *arguments, SimResults *results) {
     printf("Stats: \n");

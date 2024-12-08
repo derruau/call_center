@@ -13,7 +13,7 @@ TOKENIZER types:
         - A FLAG is a strings arguments that start matches the flag type definition (see tokenizer.c) 
         - A VALUE is a string argument that matches any type definition that is not a FLAG
     
-    The Token type is structured like this:
+    The Token type is structured like this:BAD_SYNTAX_ERROR_MESSAGEstructured
     {
         TYPE: FLAG or VALUE
         DATA: FLAG_DATA or VALUE_DATA
@@ -70,24 +70,29 @@ typedef enum _e_value_type {
     STRING = 0b10000,
 } _value_type;
 
+
 typedef enum e_token_type {
     FLAG,
     VALUE
 } _token_type;
 
+
 struct _s_flag {
     char *name;
 };
+
 
 struct _s_value {
     void *data;
     _value_type type;
 };
 
+
 typedef union _u_token {
     struct _s_flag* f;
     struct _s_value* v;
 } _token_data;
+
 
 typedef struct s_token {
     _token_type type;
@@ -121,6 +126,7 @@ typedef struct s_arguments{
 
 typedef void (*lexer_callback)(Arguments *a, Token **t); 
 
+
 typedef struct {
     char abv;
     int has_abv;
@@ -137,6 +143,7 @@ typedef struct {
     // equal to FLOAT | INT
     int values_type[];
 } Rule;
+
 
 typedef struct {
     int max_size;

@@ -43,7 +43,7 @@ Remarks:
 #define FLAG_NOT_IN_SYNTAX 422
 #define BAD_SYNTAX_ERROR 423
 #define CANNOT_ADD_SYNTAX_ERROR_MESSAGE "[LEXER ERROR] - Cannot add another expression to the syntax!\n"
-#define FLAG_NOT_IN_SYNTAX_MESSAGE "[LEXER ERROR] - Flag is not in the syntax!\n"
+#define FLAG_NOT_IN_SYNTAX_MESSAGE "[LEXER ERROR] - Flag '%s' is not in the syntax!\n"
 #define BAD_SYNTAX_ERROR_MESSAGE "[LEXER ERROR] - Syntax error!\n"
 
 #define SYNTAX_SIZE_INCREASE 5
@@ -61,6 +61,7 @@ Syntax *lexer_init_syntax() {
 
     return s;
 }
+
 
 // Returns a new Rule with the parameters you've passed it
 // See arg_types.c for explanations about what is a Rule
@@ -81,6 +82,7 @@ Rule *lexer_init_rule(char *full_name, char abv, int number_of_values, int value
 
     return e;
 }
+
 
 // Adds a Rule to the Syntax
 // See arg_types.c for explanations about what is a Rule / Syntax
@@ -119,9 +121,10 @@ Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* rule_name) {
         if (syntax->s[i]->abv == rule_name[0]) return syntax->s[i];
     }
 
-    printf(FLAG_NOT_IN_SYNTAX_MESSAGE);
+    printf(FLAG_NOT_IN_SYNTAX_MESSAGE, rule_name);
     exit(FLAG_NOT_IN_SYNTAX);
 }
+
 
 // The main Lexer function.
 // Checks the Tokens against the Syntax and fills up
@@ -160,4 +163,3 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
 
     return 0;
 }
-

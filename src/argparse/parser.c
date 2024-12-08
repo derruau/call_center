@@ -39,13 +39,12 @@ Remarks:
 #define PARSER_ERROR 403
 #define TOKENIZER_ERROR_MESSAGE "[TOKENIZER ERROR] - Something unexpected went wrong!\n"
 
-//TODO: Setup good values for the defaults
-#define LAMBDA_DEFAULT 1.2
+#define LAMBDA_DEFAULT 0.05
 #define OPERATORS_DEFAULT 5
 #define NUMBER_OF_DAYS_DEFAULT 1
 #define QUEUE_SIZE_DEFAULT 1000
-#define MINSRV_DEFAULT 30 // 30 seconds
-#define MAXSRV_DEFAULT 600 // 10 minutes
+#define MIN_CALL_DURATION_DEFAULT 30 // 30 seconds
+#define MAX_CALL_DURATION_DEFAULT 300 // 5 minutes
 #define SHIFT_OPENING_DEFAULT 3600*6 // 6 AM
 #define SHIFT_CLOSING_DEFAULT 3600*18 // 6 PM
 #define PATH_DEFAULT "output.txt"
@@ -62,8 +61,8 @@ Arguments *parser_create_arguments() {
     a->operators = OPERATORS_DEFAULT;
     a->number_of_days = NUMBER_OF_DAYS_DEFAULT; 
     a->queue_size = QUEUE_SIZE_DEFAULT;
-    a->min_call_duration = MINSRV_DEFAULT;
-    a->max_call_duration = MAXSRV_DEFAULT;
+    a->min_call_duration = MIN_CALL_DURATION_DEFAULT;
+    a->max_call_duration = MAX_CALL_DURATION_DEFAULT;
     a->shift_opening = SHIFT_OPENING_DEFAULT;
     a->shift_closing = SHIFT_CLOSING_DEFAULT;
     a->wants_to_save = 0;
@@ -71,6 +70,7 @@ Arguments *parser_create_arguments() {
 
     return a;
 }
+
 
 // Should not be called outside of this file.
 // This is where you add another Syntax rule.
@@ -118,6 +118,7 @@ Syntax* _parser_create_syntax() {
     return syntax;
 
 }
+
 
 // Parses the string arguments and puts them into an Arguments struct.
 int parser_parse_args(int argc, char *argv[], Arguments *arguments) {

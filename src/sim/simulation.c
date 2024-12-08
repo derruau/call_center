@@ -1,17 +1,20 @@
 /* 
 ========================================== SIMULATION.C ==========================================
-This file's role is to perform the simulation
+This file's role is to perform the simulation.
 
-The simulation wor
+The simulation works like this:
+    1. We simulate every second of every day of the simulation.
 
+    2. For each second, we first look to see if the call center is open. Open means either: The 
+    second is within it's opening hours and we accept new calls or the second is not within it's 
+    opening hours and we are only processing the calls that are already in the queue.
+        2.1 We update the operators's state
+        2.1 If the call center is open and taking calls, we check if a call has arrived. If it has,
+            we queue it.
+    
+    3. If the call center is closed. We are just checking if any call arrives and reject it.
 
-architecture:
-    functions:
-        - simulate_day()
-        - simulate_n_days()
-    structs:
-        - stats --> see docs/consigne.pdf
-        - sim_results: {calls **c, stats *s, int has_stats}
+    4. Once the simulation is over, we calculate it's stats and put them in a SimResult object.
 
 ========================================== SIMULATION.C ==========================================
 */
@@ -51,6 +54,7 @@ Operator *sim_create_operator(time_t ends_in) {
     return o;
 }
 
+
 Operator **sim_create_n_operators(int n) {
     if (n < 0) {
         printf(OPERATOR_NUMBER_IS_NEGATIVE_MESSAGE);
@@ -63,6 +67,7 @@ Operator **sim_create_n_operators(int n) {
     }
     return ol;
 }
+
 
 void sim_operator_take_client(Operator *o, Call *c, int day_tick) {
     if (o->occupied > 0) {
@@ -77,6 +82,7 @@ void sim_operator_take_client(Operator *o, Call *c, int day_tick) {
     if (c->wait_time < 0) c->wait_time = 0; // Sometimes is -1, dirty fix but don't have the time for more
     c->call_end = c->call_start + c->wait_time + c->call_duration;
 }
+
 
 int sim_update_operators(
     Stats *s, 
@@ -106,6 +112,7 @@ int sim_update_operators(
     }
 }
 
+
 void sim_log_call(SimResults *results, Call *call) {
     if (results->calls_current_size == results->calls_max_size) {
         Call **nc = realloc(results->calls, sizeof(Call*)*(results->calls_max_size + 5));
@@ -120,9 +127,11 @@ void sim_log_call(SimResults *results, Call *call) {
     results->calls_current_size++;
 }
 
+
 int sim_time_in_open_hours(int time, Arguments *a) {
     return (time >= a->shift_opening) && (time <= a->shift_closing);
 }
+
 
 SimResults *sim_start_simulation(Arguments *a) {
     SimResults *results = malloc(sizeof(SimResults));
@@ -138,7 +147,7 @@ SimResults *sim_start_simulation(Arguments *a) {
     ua_call_queue_size->count = 0;
     ua_call_queue_size->sum = 0;
 
-    results->has_stats = 1; //TODO: add argument to control this
+    results->has_stats = 1; // Scraped!
     if (results->has_stats) results->stats = stats_create_stats(a->number_of_days);
 
     Queue *call_queue = queue_init(a->queue_size);
@@ -149,7 +158,8 @@ SimResults *sim_start_simulation(Arguments *a) {
     // Here the times can be added because they're guaranteed to be in seconds.
     time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
 
-    // TODO: refactor to make it easier to read.s
+    // TODO: refactor to make it easier to read.
+    // Note: We don't have the time to do this.
     for (int day = 1; day <= a->number_of_days; day++) {
         int day_tick = 0;
         for (int day_tick =0; day_tick < TICKS_PER_DAY; day_tick++) {

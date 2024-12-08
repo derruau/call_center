@@ -30,17 +30,13 @@ and more easily processable data type.
 #include <regex.h>
 #include "argparse/types.h"
 
-
 #define TOKENIZER_GENERAL_ERROR 410
 #define REGEX_COMPILATION_ERROR 411
 #define BAD_TOKEN_ERROR 412
 #define CANT_TOKENIZE_DURATION_UNIT 413
-#define BAD_TOKEN_TYPE 414
 #define REGEX_COMPILATION_ERROR_MESSAGE "[TOKENIZER ERROR] - Could not compile argument parsing regex!\n"
-#define BAD_TOKEN_ERROR_MESSAGE "[USER ERROR] - Bad arguments!\n"
-#define CANT_TOKENIZE_DURATION_UNIT_MESSAGE "[TOKENIZER ERROR] - Could not tokenize a duration!\n"
-#define BAD_TOKEN_TYPE_MESSAGE "[TOKENIZER ERROR] - Token type not recognised!"
-
+#define BAD_TOKEN_ERROR_MESSAGE "[USER ERROR] - Bad argument: '%s'!\n"
+#define CANT_TOKENIZE_DURATION_UNIT_MESSAGE "[TOKENIZER ERROR] - Could not tokenize a duration: '%s'!\n"
 
 // Types definition
 #define FLAG_REGEX "(^-[a-z]$)|(^--[a-z](([a-z])|(-)){1,}$)"
@@ -75,6 +71,7 @@ char *_tokenizer_get_substring_of(char *s, int start_pos) {
     return result;
 }
 
+
 // Should not be used outside of this file!
 // Separates a string argument of type DURATION
 // into two DURATION_UNIT and puts them in the tokens
@@ -104,7 +101,7 @@ int _tokenizer_handle_duration(char *argv, Token *tokens, int tokens_pos) {
 
         char *ns = realloc(strings[current_string], sizeof(char)*(si + 2));
         if (ns == NULL) {
-            printf(CANT_TOKENIZE_DURATION_UNIT_MESSAGE);
+            printf(CANT_TOKENIZE_DURATION_UNIT_MESSAGE, argv);
             exit(CANT_TOKENIZE_DURATION_UNIT);
         }
         strings[current_string] = ns;
@@ -129,6 +126,7 @@ int _tokenizer_handle_duration(char *argv, Token *tokens, int tokens_pos) {
 
     return 0;
 }
+
 
 // Should not be used outside of this file
 // Transforms a string argument into a  (or multiple) Token(s)
@@ -214,7 +212,7 @@ int _tokenizer_process_argv(char *argv, Token *tokens, int pos) {
     }
 
     else {
-        printf(BAD_TOKEN_ERROR_MESSAGE);
+        printf(BAD_TOKEN_ERROR_MESSAGE, argv);
         exit(BAD_TOKEN_ERROR);
     }
     

@@ -28,6 +28,7 @@ void misc_print_arguments(Arguments *a) {
     printf("}\n");
 }
 
+
 void misc_print_token(Token token) {
     if (token.type == FLAG) {
         if (token.data.f == 0) return;
@@ -56,6 +57,7 @@ void misc_print_token(Token token) {
         }
     }
 }
+
 
 void misc_print_token_list(Token *t, int number_of_tokens) {
 

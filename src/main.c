@@ -1,3 +1,24 @@
+/* 
+========================================== MAIN.C ==========================================
+The main file of this program. It stitches together every module and makes them work as a
+whole.
+
+The global architecture behind this program is as follows
+    1. We parse the argc and argv we get from the user into actually usable data.
+       This usable data is in the form of a struct that contains every parameter of the
+       simulation.
+    
+    2. We perform the simulation with the parsed parameter. If you wish to know more
+       about how the simulation is done, please refer to sim/simulation.c
+       The simulation gives us a SimResult object which we'll use further in the
+       program.
+
+    3. We save the calls in the SimResultto a file if we gave it the option.
+
+    4. We print the SimResult's statistics to the screen unless specified by the user.
+========================================== MAIN.C ==========================================
+*/
+
 #include "argparse/misc.h"
 #include "argparse/parser.h"
 #include "sim/call.h"
@@ -20,13 +41,13 @@ void show_help() {
     "  -h --help            Show this screen.\n"
     "  -v --version         Show version.\n"
     "  -q --quiet           Doesn't print the stats to the screen\n"
-    "  -l --lambda          Lambda parameter of a Poisson Law. [default: TODO]\n"
+    "  -l --lambda          Lambda parameter of a Poisson Law. [DEFAULT: 0.05]\n"
     "  -s --shift           The call centers shift opening and closing hours in \n"
-    "                       duration format (see bellow).\n"
+    "                       duration format (see bellow). [DEFAULT: 6h:18h]\n"
     "  -d --duration        Minimum and Maximum call duration for a client in \n"
-    "                       duration format (see bellow).\n"
+    "                       duration format (see bellow). [DEFAULT: 30s:5m]\n"
     "  -n --number-of-days  The number of days in the simulation [default: 1]\n"
-    "  -o --operators       Number of operators in the call center.\n"
+    "  -o --operators       Number of operators in the call center. [DEFAULT:]\n"
     "  --queue-size         Sets the call queue size to a specific value. Useful\n"
     "                       when the simulation tells you that there is an overflow.\n"
     "                       [DEFAULT: 1000]"
@@ -49,12 +70,13 @@ void show_help() {
     );
 }
 
+
 void show_version() {
     printf("%s %s\n", PROGRAM_NAME, PROGRAM_VERSION);
 }
 
-//TODO: add documentation to the code
-//TODO: add --output-file option
+//TODO: add a client_names option
+//TODO: add the day to the output
 int main(int argc, char *argv[]) {
 
     if (argc == 1)  {
@@ -82,7 +104,7 @@ int main(int argc, char *argv[]) {
     // 2. Perform the simulation
     SimResults *results = sim_start_simulation(a);
 
-    // 3. Save the calls
+    // 3. Save the calls if the option was given
     if (a->wants_to_save != 0) save_calls_to_file(a, results);
 
     // 4. Print the eventual results.

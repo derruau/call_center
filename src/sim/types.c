@@ -69,6 +69,7 @@ typedef struct {
     time_t* daily_real_closing_time;
 } Stats;
 
+
 typedef struct {
     int sum;
     int count;
@@ -84,6 +85,7 @@ typedef struct {
     int calls_current_size;
     int calls_max_size;
 } SimResults;
+
 
 typedef struct {
     int occupied;

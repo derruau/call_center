@@ -13,7 +13,6 @@ too general to fit into any other file.
 #include "sim/types.h"
 #include "sim/queue.h"
 
-
 #define INVALID_PATH 301
 #define UNEXPECTED_ERROR 302
 #define UNEXPECTED_ERROR_MESSAGE "[ERROR] - An unexpected error was encountered!"
@@ -24,6 +23,7 @@ too general to fit into any other file.
 void misc_print_call(Call *c) {
     printf("Call{ call_id:%i, name: %s, tel:%s }\n", c->id, c->client_name,  c->tel);
 }
+
 
 void misc_print_call_queue(Queue *q) {
     if (queue_is_empty(q)) return;
@@ -40,6 +40,7 @@ void misc_print_call_queue(Queue *q) {
     }
     printf("\n");
 }
+
 
 void misc_print_int_queue(Queue *q) {
     if (queue_is_empty(q)) return;
@@ -58,8 +59,6 @@ void misc_print_int_queue(Queue *q) {
 }
 
 
-// TODO: remove the seed parameter and add an init_sim function
-// that calls srand()
 float misc_gen_exponential(float lambda, bool seed) {
     if (seed) srand(time(NULL));
 
@@ -69,6 +68,7 @@ float misc_gen_exponential(float lambda, bool seed) {
 
     return -log(1 - u) / lambda;
 } 
+
 
 float misc_gen_uniform(float min, float max, bool seed) {
     if (seed) srand(time(NULL));
@@ -82,6 +82,7 @@ float misc_gen_uniform(float min, float max, bool seed) {
     return min + (max - min)*ret;
 }
 
+
 // Adds t1 to t2.
 // Important: t2 is in seconds!!
 time_t misc_add_seconds(time_t t1, int t2) {
@@ -94,6 +95,7 @@ time_t misc_add_seconds(time_t t1, int t2) {
     return result;
 }
 
+
 time_t misc_int_to_seconds(int time) {
     time_t epoch = 0;
     struct tm *t = localtime(&epoch);
@@ -104,6 +106,7 @@ time_t misc_int_to_seconds(int time) {
 
     return converted_time;
 }
+
 
 char* misc_get_random_name_from_file(char *path, char* name_ptr) {
     FILE *f = fopen(path, "r");
