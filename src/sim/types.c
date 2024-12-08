@@ -49,7 +49,7 @@ typedef struct {
     // 3rd requirement
     // Average number of handled calls per unit of time 
     // Can be computed after simulation ran
-    int avg_daily_call_rate;
+    float avg_daily_call_rate;
 
     //4th requirement
     // Daily rate of handled

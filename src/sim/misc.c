@@ -79,7 +79,7 @@ float misc_gen_uniform(float min, float max, bool seed) {
 
     float ret = (rand() % i) / (float)i;
 
-    return ret;
+    return min + (max - min)*ret;
 }
 
 // Adds t1 to t2.

@@ -44,9 +44,13 @@ UncomputedAverage *update_ua(UncomputedAverage *ua, int value) {
 
 void stats_update_queue_stats(Stats *s, Queue *call_queue, UncomputedAverage *avg) {
 
-    if (call_queue->number_of_elements > s->max_queue_size) s->max_queue_size = call_queue->number_of_elements;
+    if (call_queue->number_of_elements > s->max_queue_size)  {
+        s->max_queue_size = call_queue->number_of_elements;   
+    }
     
-    if (call_queue->number_of_elements < s->min_queue_size) s->min_queue_size = call_queue->number_of_elements;
+    if (call_queue->number_of_elements < s->min_queue_size) {
+        s->min_queue_size = call_queue->number_of_elements;
+    }
 
     update_ua(avg, call_queue->number_of_elements);
 }
@@ -54,11 +58,11 @@ void stats_update_queue_stats(Stats *s, Queue *call_queue, UncomputedAverage *av
 void stats_compute_stats(Stats *s, Call **calls, UncomputedAverage *avg_call_queue_size, int number_of_calls, int total_number_of_ticks) {
     time_t min_call_wait_time = calls[0]->wait_time;
     time_t max_call_wait_time = calls[0]->wait_time;
-    time_t avg_call_wait_time = 0;
+    float avg_call_wait_time = 0;
 
-    int avg_daily_call_rate = 0;
+    float avg_daily_call_rate = 0;
 
-    time_t avg_response_time = 0;
+    float avg_response_time = 0;
 
     for (int i=0; i < number_of_calls; i++) {
         if (calls[i]->wait_time > max_call_wait_time) max_call_wait_time = calls[i]->wait_time;
@@ -80,7 +84,7 @@ void stats_compute_stats(Stats *s, Call **calls, UncomputedAverage *avg_call_que
     // Putting stats into the Stats struct
     
     //min_queue_size & max_queue_size are already set by stats_update_queue_stats()
-    s->avg_call_wait_time = avg_call_queue_size->sum / (float)avg_call_queue_size->count;
+    s->avg_queue_size = avg_call_queue_size->sum / (float)avg_call_queue_size->count;
 
     s->min_call_wait_time = min_call_wait_time;
     s->max_call_wait_time = max_call_wait_time;
@@ -88,9 +92,9 @@ void stats_compute_stats(Stats *s, Call **calls, UncomputedAverage *avg_call_que
 
     s->avg_daily_call_rate = avg_daily_call_rate;
 
-    s->handled_customer_rate = calls[number_of_calls - 1]->id / (float)number_of_calls;
+    s->handled_customer_rate = number_of_calls / (float)calls[number_of_calls - 1]->id;
     
-    s->avg_response_time = avg_response_time;
+    s->avg_response_time = (int) avg_response_time;
 
     // daily_real_closing_time is set by stats_compute_real_closing_time()
 }

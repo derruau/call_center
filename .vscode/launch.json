@@ -11,11 +11,11 @@
             "program": "${workspaceFolder}/build/queue_project",
             "args": [
                 "-d",
-                "5s:5m",
+                "1m:2m",
                 "-l",
-                "0.1",
+                "0.05",
                 "-o",
-                "20",
+                "3",
                 "bruhmoment"
             ],
             "stopAtEntry": false,

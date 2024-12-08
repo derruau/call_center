@@ -75,6 +75,7 @@ void sim_operator_take_client(Operator *o, Call *c, int day_tick) {
 
     // Compute the call's missing infos
     c->wait_time = (time_t)day_tick - c->call_start;
+    if (c->wait_time < 0) c->wait_time = 0; // Sometimes is -1, dirty fix but don't have the time for more
     c->call_end = c->call_start + c->wait_time + c->call_duration;
 }
 
@@ -86,6 +87,9 @@ int sim_update_operators(
     int number_of_operators, 
     int day_tick
     ) {
+    
+    stats_update_queue_stats(s, call_queue, ua);
+
     for (int i=0; i < number_of_operators; i++) {
         if (ol[i]->occupied == 0) {
             if (queue_is_empty(call_queue)) continue;
@@ -101,8 +105,6 @@ int sim_update_operators(
 
         ol[i]->ends_in--;
     }
-
-    stats_update_queue_stats(s, call_queue, ua);
 }
 
 void sim_log_call(SimResults *results, Call *call) {
@@ -134,6 +136,8 @@ SimResults *sim_start_simulation(Arguments *a) {
 
     // To compute the average call queue size in stats
     UncomputedAverage *ua_call_queue_size = malloc(sizeof(UncomputedAverage));
+    ua_call_queue_size->count = 0;
+    ua_call_queue_size->sum = 0;
 
     results->has_stats = 1; //TODO: add argument to control this
     if (results->has_stats) results->stats = stats_create_stats(a->number_of_days);
@@ -144,14 +148,9 @@ SimResults *sim_start_simulation(Arguments *a) {
     int next_call_id = 1;
     time_t next_call =  misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 1));
     // Here the times can be added because they're guaranteed to be in seconds.
-    time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
-        misc_gen_uniform(
-            a->min_call_duration,
-            a->max_call_duration,
-            0
-        );
+    time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
 
-    // TODO: refactor to make it easier to read.
+    // TODO: refactor to make it easier to read.s
     for (int day = 1; day <= a->number_of_days; day++) {
         int day_tick = 0;
         for (int day_tick =0; day_tick < TICKS_PER_DAY; day_tick++) {
@@ -160,17 +159,11 @@ SimResults *sim_start_simulation(Arguments *a) {
             if (sim_time_in_open_hours(day_tick, a) || !queue_is_empty(call_queue)) {
 
                 sim_update_operators(results->stats, ua_call_queue_size, operators, call_queue, a->operators, day_tick);
-
                 // Next call is in closing hours 
                 if (!sim_time_in_open_hours(next_call, a))  {
                     next_call_id++;
                     next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
-                    time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
-                        misc_gen_uniform(
-                            a->min_call_duration,
-                            a->max_call_duration,
-                            0
-                        );
+                    time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
                     continue;
                 }
 
@@ -185,12 +178,7 @@ SimResults *sim_start_simulation(Arguments *a) {
 
                     next_call_id++;
                     next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
-                    time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
-                        misc_gen_uniform(
-                            a->min_call_duration,
-                            a->max_call_duration,
-                            0
-                        );
+                    time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
                 }
                 continue;
             }
@@ -201,12 +189,7 @@ SimResults *sim_start_simulation(Arguments *a) {
             if (day_tick == next_call) {
                     next_call_id++;
                     next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
-                    time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
-                        misc_gen_uniform(
-                            a->min_call_duration,
-                            a->max_call_duration,
-                            0
-                        );
+                    time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
             }
         }
         
