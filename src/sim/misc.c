@@ -75,6 +75,8 @@ float misc_gen_uniform(float min, float max, bool seed) {
 
     int i = (int)(max - min);
 
+    if (i == 0) return min;
+
     float ret = (rand() % i) / (float)i;
 
     return ret;
@@ -124,8 +126,8 @@ char* misc_get_random_name_from_file(char *path, char* name_ptr) {
         if (c == '\n') break;
     }
 
-    char name[MAX_NAME_LENGTH];
-    char surname[MAX_NAME_LENGTH];
+    char* name = malloc(sizeof(char)*MAX_NAME_LENGTH);
+    char* surname = malloc(sizeof(char)*MAX_NAME_LENGTH);
     fscanf(f, "%[^,],%[^\n]", name, surname); // Parses a line of the file
 
     fclose(f);
@@ -133,14 +135,10 @@ char* misc_get_random_name_from_file(char *path, char* name_ptr) {
     // String concatenation
     size_t name_size = strlen(name);
     size_t surname_size = strlen(surname);
-    char *full_name = malloc(sizeof(char)* (name_size + surname_size + 1) );
+    char *full_name = malloc(sizeof(char)* (name_size + surname_size + 2) );
     strcpy(full_name, name);
     strcat(full_name, " ");
     strcat(full_name, surname);
-
-
-    name_ptr = malloc(sizeof(char)* (name_size + surname_size) );
-    strcpy(name_ptr, full_name);
 
     return full_name;
     
