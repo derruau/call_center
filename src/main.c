@@ -77,6 +77,8 @@ int main(int argc, char *argv[]) {
     // 2. Print the eventual result
     save_calls_to_file(a, results);
 
+    save_print_stats(a, results);
+
     return 0;
 
 }

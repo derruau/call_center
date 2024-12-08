@@ -114,4 +114,27 @@ int save_calls_to_file(Arguments *arguments, SimResults *results) {
     }
 
     fclose(f);
+
+    return 0;
+}
+
+void save_print_stats(Arguments *arguments, SimResults *results) {
+    printf("Stats: \n");
+    printf("  Minimum Queue Size: %i\n", results->stats->min_queue_size);
+    printf("  Maximum Queue Size: %i\n", results->stats->max_queue_size);
+    printf("  Average Queue Size: %i_n\n", results->stats->avg_queue_size);
+    printf("  Minimum Call Wait Time: %li\n", results->stats->min_call_wait_time);
+    printf("  Maximim Call Wait Time: %li\n", results->stats->max_call_wait_time);
+    printf("  Average Call Wait Time: %li\n\n", results->stats->avg_call_wait_time);
+    printf("  Average Daily Call Rate: %f\n\n", results->stats->avg_daily_call_rate);
+    printf("  Handled Customer Rate: %f\n\n", results->stats->handled_customer_rate);
+    printf("  Average Response Time: %li\n\n", results->stats->avg_response_time);
+    printf("  Daily Closing Time: ");
+
+    for (int i=0; i < arguments->number_of_days; i++) {
+        printf("%li ", results->stats->daily_real_closing_time[i]);
+    }
+    
+    printf("\n");
+
 }
