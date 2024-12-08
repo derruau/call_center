@@ -12,9 +12,9 @@ void show_help() {
     "Simulation of a call center. (School project)\n"
     "\n"
     "Usage:\n"
-    "  - %s [options] <output-path>\n"
+    "  - %s [options]\n"
     "  - %s --help\n"
-    "  - %s -l 2.6 -d 0s:30m -o 6 output.txt\n"
+    "  - %s -l 2.6 -d 0s:30m -o 6 --output-file output.txt\n"
     "\n"
     "Options:\n"
     "  -h --help            Show this screen.\n"
@@ -30,6 +30,8 @@ void show_help() {
     "  --queue-size         Sets the call queue size to a specific value. Useful\n"
     "                       when the simulation tells you that there is an overflow.\n"
     "                       [DEFAULT: 1000]"
+    "  --output-file        Saves the generated calls to a file. If this flag is not\n"
+    "                       present, the calls won't be saved anywhere!"
     "\n"
     "Duration Format:\n"
     "  The duration format encodes a start and end time like so:\n"
@@ -51,7 +53,6 @@ void show_version() {
     printf("%s %s\n", PROGRAM_NAME, PROGRAM_VERSION);
 }
 
-//TODO: free resources at the end of the program's execution
 //TODO: add documentation to the code
 //TODO: add --output-file option
 int main(int argc, char *argv[]) {
@@ -61,13 +62,12 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
+    // 1. Argument Parsing
     // Parses the arguments into 'a'. If you wish to see
     // The structure of Arguments, please refer to
     // argparse/types.c
     Arguments *a = parser_create_arguments();
     int arg_parsing_error = parser_parse_args(argc, argv, a);
-
-    misc_print_arguments(a);
 
     if (a->help) {
         show_help();
@@ -79,12 +79,13 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // 1. Perform the simulation
+    // 2. Perform the simulation
     SimResults *results = sim_start_simulation(a);
 
-    // 2. Print the eventual result
-    save_calls_to_file(a, results);
+    // 3. Save the calls
+    if (a->wants_to_save != 0) save_calls_to_file(a, results);
 
+    // 4. Print the eventual results.
     if (a->quiet == 0) save_print_stats(a, results);
 
     return 0;

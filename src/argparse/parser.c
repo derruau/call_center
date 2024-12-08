@@ -66,6 +66,7 @@ Arguments *parser_create_arguments() {
     a->max_call_duration = MAXSRV_DEFAULT;
     a->shift_opening = SHIFT_OPENING_DEFAULT;
     a->shift_closing = SHIFT_CLOSING_DEFAULT;
+    a->wants_to_save = 0;
     a->path = &PATH_DEFAULT[0];
 
     return a;
@@ -109,6 +110,10 @@ Syntax* _parser_create_syntax() {
     int duration_types[] = {DURATION_UNIT, DURATION_UNIT};
     Rule *duration = lexer_init_rule("duration", 'd', 2, duration_types, &cb_duration);
     lexer_add_rule_to_syntax(syntax, duration);
+
+    int output_file_types[] = {STRING};
+    Rule *output_file = lexer_init_rule("output-file", '\0', 1, output_file_types, &cb_output_file);
+    lexer_add_rule_to_syntax(syntax, output_file);
 
     return syntax;
 

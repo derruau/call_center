@@ -122,3 +122,8 @@ void cb_duration(Arguments *arguments, Token **t) {
     char *maxsrv = (char*)t[1]->data.v->data;
     arguments->max_call_duration = _cb_duration_unit_to_time(maxsrv);
 }
+
+void cb_output_file(Arguments *arguments, Token **t) {
+    arguments->wants_to_save = 1;
+    arguments->path = (char*)t[0]->data.v->data;
+}

@@ -35,7 +35,7 @@ architecture:
 #define OPERATOR_NUMBER_IS_NEGATIVE_MESSAGE "[SIMULATION ERROR] - Operator number must be positive!\n"
 #define OPERATOR_ALREADY_OCCUPIED_MESSAGE "[SIMULATION ERROR] - Operator is already occupied!\n"
 #define COULDNT_ALLOCATE_MEMORY_MESSAGE "[SIMULATION ERROR] - Couldn't allocate more memory to program!\n"
-#define CALL_QUEUE_IS_FULL_MESSAGE "[SIMULATION ERROR] - Call Queue is full!\n"
+#define CALL_QUEUE_IS_FULL_MESSAGE "[SIMULATION ERROR] - Call Queue of size %i is full! Try adding the '--queue-size %i' option.\n"
 
 Operator *sim_create_operator(time_t ends_in) {
     Operator *o = malloc(sizeof(Operator));
@@ -169,7 +169,7 @@ SimResults *sim_start_simulation(Arguments *a) {
                 if (day_tick == next_call) {
                     Call *call = call_create_random(next_call_id, next_call, next_call_duration);
                     if (queue_is_full(call_queue)) {
-                        printf(CALL_QUEUE_IS_FULL_MESSAGE);
+                        printf(CALL_QUEUE_IS_FULL_MESSAGE, a->queue_size, a->queue_size*2);
                         exit(CALL_QUEUE_IS_FULL);
                     }
                     queue_enqueue(call_queue, call);

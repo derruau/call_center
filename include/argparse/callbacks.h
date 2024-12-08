@@ -21,7 +21,7 @@ void cb_shift(Arguments *arguments, Token **t);
 
 void cb_duration(Arguments *arguments, Token **t);
 
-
+void cb_output_file(Arguments *arguments, Token **t);
 
 
 #endif

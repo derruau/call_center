@@ -56,6 +56,7 @@ typedef struct s_arguments{
     time_t shift_opening;
     time_t shift_closing;
 
+    int wants_to_save;
     char *path;
 } Arguments;
 
