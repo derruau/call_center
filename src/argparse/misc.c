@@ -19,8 +19,8 @@ void misc_print_arguments(Arguments *a) {
     printf("   float lambda: %f\n", a->lambda);
     printf("   int operators: %i\n", a->operators);
     printf("   int number_of_days: %i\n\n", a->number_of_days);
-    printf("   time_t minsrv: %li\n", a->minsrv);
-    printf("   time_t maxsrv: %li\n\n", a->maxsrv);
+    printf("   time_t min_call_duration: %li\n", a->min_call_duration);
+    printf("   time_t max_call_duration: %li\n\n", a->max_call_duration);
     printf("   time_t shift_opening: %li\n", a->shift_opening);
     printf("   time_t shift_closing: %li\n\n", a->shift_closing);
     printf("   char* path: %s\n", a->path);

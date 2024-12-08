@@ -13,7 +13,10 @@ too general to fit into any other file.
 #include "sim/types.h"
 #include "sim/queue.h"
 
+
 #define INVALID_PATH 301
+#define UNEXPECTED_ERROR 302
+#define UNEXPECTED_ERROR_MESSAGE "[ERROR] - An unexpected error was encountered!"
 
 #define POISSON_MAX 32768
 #define MAX_NAME_LENGTH 32
@@ -57,10 +60,12 @@ void misc_print_int_queue(Queue *q) {
 
 // TODO: remove the seed parameter and add an init_sim function
 // that calls srand()
-float misc_gen_poisson(float lambda, bool seed) {
+float misc_gen_exponential(float lambda, bool seed) {
     if (seed) srand(time(NULL));
 
-    float u = (rand() % POISSON_MAX) / POISSON_MAX;
+    float u = (rand() % POISSON_MAX) / (float)POISSON_MAX;
+
+    float ret = -log(1 - u) / lambda;
 
     return -log(1 - u) / lambda;
 } 
@@ -70,7 +75,9 @@ float misc_gen_uniform(float min, float max, bool seed) {
 
     int i = (int)(max - min);
 
-    return (rand() % i) / i;
+    float ret = (rand() % i) / (float)i;
+
+    return ret;
 }
 
 // Adds t1 to t2.
@@ -85,9 +92,9 @@ time_t misc_add_seconds(time_t t1, int t2) {
     return result;
 }
 
-time_t misc_to_seconds(int time) {
+time_t misc_int_to_seconds(int time) {
     time_t epoch = 0;
-    struct tm *t = gmtime(&epoch);
+    struct tm *t = localtime(&epoch);
     
     t->tm_sec += time;
     
@@ -101,7 +108,10 @@ char* misc_get_random_name_from_file(char *path, char* name_ptr) {
 
     if (f == NULL) exit(INVALID_PATH);
 
-    fseek(f, 0L, SEEK_END);
+    if (fseek(f, 0L, SEEK_END) != 0) {
+        printf(UNEXPECTED_ERROR_MESSAGE);
+        exit(UNEXPECTED_ERROR);
+    }
     long size = ftell(f); // Gets the position of the file pointer
  
     // Sets the position to a random character of the file

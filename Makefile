@@ -52,7 +52,7 @@ clean:
 
 .PHONY: debug
 debug: clean
-debug: CPPFLAGS += -ggdb
+debug: CPPFLAGS += -ggdb -g
 debug: $(BUILD_DIR)/$(TARGET_EXEC)
 
 # Includes the .d makefiles

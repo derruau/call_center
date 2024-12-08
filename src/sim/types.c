@@ -16,6 +16,7 @@ typedef struct call {
     time_t call_start;
     time_t wait_time;
     time_t call_end;
+    time_t call_duration;
 } Call;
 
 //================ queue.c types ================
@@ -66,6 +67,14 @@ typedef struct {
 
 typedef struct {
     int has_stats;
-    Call **calls;
     Stats *stats;
+    
+    Call **calls;
+    int calls_current_size;
+    int calls_max_size;
 } SimResults;
+
+typedef struct {
+    int occupied;
+    time_t ends_in;
+} Operator;

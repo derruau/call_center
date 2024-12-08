@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
     // 1. Perform the simulation
     SimResults *results = sim_start_simulation(a);
 
+    printf("yay!!\n");
     // 2. Print the eventual result
 
     return 0;

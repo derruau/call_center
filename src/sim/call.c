@@ -23,9 +23,9 @@ You can create either one or multiples.
 
 
 // Creates a random call
-Call *call_create_random(int id, time_t call_start, time_t call_end) {
+Call *call_create_random(int id, time_t call_start, time_t call_duration) {
 
-    Call *c = malloc(sizeof(Call) + 2*sizeof(char*));
+    Call *c = malloc(sizeof(Call));
 
     c->tel = malloc(sizeof(char)*11);
     c->tel[0] = '0';
@@ -39,9 +39,10 @@ Call *call_create_random(int id, time_t call_start, time_t call_end) {
     c->id = id;
     char *c_name = misc_get_random_name_from_file(NAMES_PATH, c->client_name);
     c->client_name = c_name;
-    c->wait_time = -1; // Calculated at runtime
     c->call_start = call_start;
-    c->call_end = call_end;
+    c->call_duration = call_duration;
+    c->wait_time = -1; // Calculated at runtime
+    c->call_end = -1; // Calculated at runtime
 
     return c;
 }
@@ -59,13 +60,12 @@ Call **call_create_n_random(
 
     time_t prev_call = shift_start;
     for (int i=0; i < n; i++) {
-        int call_start_delta = (int)MAX_CALL_INTERVAL_SECONDS*misc_gen_poisson(lamba, i==0);
-        int call_end_delta = (int)MAX_CALL_TIME_SECONDS*misc_gen_uniform(minsrv, maxsrv, false);
+        time_t call_start_delta = misc_int_to_seconds((int) misc_gen_exponential(lamba, i==0));
+        time_t call_duration =  misc_int_to_seconds((int)misc_gen_uniform(minsrv, maxsrv, false));
 
         time_t call_start = misc_add_seconds(prev_call, call_start_delta);
-        time_t call_end = misc_add_seconds(call_start, call_end_delta);
 
-        calls[i] = call_create_random(i, call_start, call_end);
+        calls[i] = call_create_random(i, call_start, call_duration);
 
         prev_call = call_start;
     }

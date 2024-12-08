@@ -11,10 +11,6 @@ callbacks and how they integrate with the program.
 ========================================== CALLBACKS.C ==========================================
 */
 
-// We need this to call t->tm_gmtoff so it's
-// added by Makefile at compile time.
-//#define _GNU_SOURCE
-
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -36,16 +32,11 @@ time_t _cb_duration_unit_to_time(char* s) {
     size_t l = strlen(s);
 
     // Initalization of t to the epoch
-    // The hard thing here is that time_t's unit is platform dependent
-    // It is NOT guaranteed to be in seconds!
+    // time_t's unit is platform dependent, it is NOT guaranteed to be in seconds!
+    // this is why we need to convert it to a struct tm.
     time_t epoch = 0;
-    struct tm *t = gmtime(&epoch);
-    time_t normalization_factor = mktime(t);
+    struct tm *t = localtime(&epoch);
     t->tm_isdst = 0;
-    #ifdef _GNU_SOURCE
-        t->tm_gmtoff = 0;
-        t->tm_zone = "GMT";
-    #endif
 
     switch (s[l - 1])
     {
@@ -81,7 +72,7 @@ time_t _cb_duration_unit_to_time(char* s) {
         return -1;
     }
 
-    time_t result = mktime(t) - normalization_factor;
+    time_t result = mktime(t);
     return result;
 }
 
@@ -113,11 +104,11 @@ void cb_shift(Arguments *arguments, Token **t) {
 
 void cb_duration(Arguments *arguments, Token **t) {
     char *minsrv = (char*)t[0]->data.v->data;
-    arguments->minsrv = _cb_duration_unit_to_time(minsrv);
+    arguments->min_call_duration = _cb_duration_unit_to_time(minsrv);
 
 
     char *maxsrv = (char*)t[1]->data.v->data;
-    arguments->maxsrv = _cb_duration_unit_to_time(maxsrv);
+    arguments->max_call_duration = _cb_duration_unit_to_time(maxsrv);
 }
 
 void cb_number_of_days(Arguments *arguments, Token **t) {

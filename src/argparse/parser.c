@@ -43,10 +43,10 @@ Remarks:
 #define LAMBDA_DEFAULT 1.2
 #define OPERATORS_DEFAULT 5
 #define NUMBER_OF_DAYS_DEFAULT 1
-#define MINSRV_DEFAULT 2
-#define MAXSRV_DEFAULT 12
-#define SHIFT_OPENING_DEFAULT 155
-#define SHIFT_CLOSING_DEFAULT 4666
+#define MINSRV_DEFAULT 30 // 30 seconds
+#define MAXSRV_DEFAULT 600 // 10 minutes
+#define SHIFT_OPENING_DEFAULT 3600*6 // 6 AM
+#define SHIFT_CLOSING_DEFAULT 3600*18 // 6 PM
 #define PATH_DEFAULT "output.txt"
 
 // Creates an instance of the Argument class
@@ -60,8 +60,8 @@ Arguments *parser_create_arguments() {
     a->lambda = LAMBDA_DEFAULT;
     a->operators = OPERATORS_DEFAULT;
     a->number_of_days = NUMBER_OF_DAYS_DEFAULT; 
-    a->minsrv = MINSRV_DEFAULT;
-    a->maxsrv = MAXSRV_DEFAULT;
+    a->min_call_duration = MINSRV_DEFAULT;
+    a->max_call_duration = MAXSRV_DEFAULT;
     a->shift_opening = SHIFT_OPENING_DEFAULT;
     a->shift_closing = SHIFT_CLOSING_DEFAULT;
     a->path = &PATH_DEFAULT[0];
