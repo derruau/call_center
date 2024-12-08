@@ -103,6 +103,7 @@ typedef struct s_arguments{
     float lambda;
     int operators;
     int number_of_days;
+    int queue_size;
 
     // Corresponds to the -d argument
     time_t min_call_duration;

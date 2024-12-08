@@ -93,6 +93,18 @@ void cb_lambda(Arguments *arguments, Token **t) {
     else arguments->lambda = *(float*)t[0]->data.v->data;
 }
 
+void cb_operators(Arguments *arguments, Token **t) {
+    arguments->operators = *(int*)t[0]->data.v->data;
+}
+
+void cb_number_of_days(Arguments *arguments, Token **t) {
+    arguments->number_of_days = *(int*)t[0]->data.v->data;
+}
+
+void cb_queue_size(Arguments *arguments, Token **t) {
+    arguments->queue_size = *(int*)t[0]->data.v->data;
+}
+
 void cb_shift(Arguments *arguments, Token **t) {
     char *_otmp = (char*)t[0]->data.v->data;
     arguments->shift_opening = _cb_duration_unit_to_time(_otmp);
@@ -109,12 +121,4 @@ void cb_duration(Arguments *arguments, Token **t) {
 
     char *maxsrv = (char*)t[1]->data.v->data;
     arguments->max_call_duration = _cb_duration_unit_to_time(maxsrv);
-}
-
-void cb_number_of_days(Arguments *arguments, Token **t) {
-    arguments->number_of_days = *(int*)t[0]->data.v->data;
-}
-
-void cb_operators(Arguments *arguments, Token **t) {
-    arguments->operators = *(int*)t[0]->data.v->data;
 }

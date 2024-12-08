@@ -10,13 +10,15 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/queue_project",
             "args": [
+                "--queue-size",
+                "1200",
                 "-d",
                 "1m:2m",
                 "-l",
                 "0.05",
                 "-o",
                 "3",
-                "bruhmoment"
+                "output.txt"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

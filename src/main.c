@@ -19,7 +19,7 @@ void show_help() {
     "Options:\n"
     "  -h --help            Show this screen.\n"
     "  -v --version         Show version.\n"
-    "  -q --quiet           Doesn't print anything to the screen\n"
+    "  -q --quiet           Doesn't print the stats to the screen\n"
     "  -l --lambda          Lambda parameter of a Poisson Law. [default: TODO]\n"
     "  -s --shift           The call centers shift opening and closing hours in \n"
     "                       duration format (see bellow).\n"
@@ -27,6 +27,9 @@ void show_help() {
     "                       duration format (see bellow).\n"
     "  -n --number-of-days  The number of days in the simulation [default: 1]\n"
     "  -o --operators       Number of operators in the call center.\n"
+    "  --queue-size         Sets the call queue size to a specific value. Useful\n"
+    "                       when the simulation tells you that there is an overflow.\n"
+    "                       [DEFAULT: 1000]"
     "\n"
     "Duration Format:\n"
     "  The duration format encodes a start and end time like so:\n"
@@ -53,6 +56,11 @@ void show_version() {
 //TODO: add --output-file option
 int main(int argc, char *argv[]) {
 
+    if (argc == 1)  {
+        show_help();
+        return 0;
+    }
+
     // Parses the arguments into 'a'. If you wish to see
     // The structure of Arguments, please refer to
     // argparse/types.c
@@ -77,7 +85,7 @@ int main(int argc, char *argv[]) {
     // 2. Print the eventual result
     save_calls_to_file(a, results);
 
-    save_print_stats(a, results);
+    if (a->quiet == 0) save_print_stats(a, results);
 
     return 0;
 

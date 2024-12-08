@@ -43,6 +43,7 @@ Remarks:
 #define LAMBDA_DEFAULT 1.2
 #define OPERATORS_DEFAULT 5
 #define NUMBER_OF_DAYS_DEFAULT 1
+#define QUEUE_SIZE_DEFAULT 1000
 #define MINSRV_DEFAULT 30 // 30 seconds
 #define MAXSRV_DEFAULT 600 // 10 minutes
 #define SHIFT_OPENING_DEFAULT 3600*6 // 6 AM
@@ -60,6 +61,7 @@ Arguments *parser_create_arguments() {
     a->lambda = LAMBDA_DEFAULT;
     a->operators = OPERATORS_DEFAULT;
     a->number_of_days = NUMBER_OF_DAYS_DEFAULT; 
+    a->queue_size = QUEUE_SIZE_DEFAULT;
     a->min_call_duration = MINSRV_DEFAULT;
     a->max_call_duration = MAXSRV_DEFAULT;
     a->shift_opening = SHIFT_OPENING_DEFAULT;
@@ -88,6 +90,18 @@ Syntax* _parser_create_syntax() {
     Rule *lambda = lexer_init_rule("lambda", 'l', 1, lambda_types, &cb_lambda);
     lexer_add_rule_to_syntax(syntax, lambda);
 
+    int operators_types[] = {INT};
+    Rule *operators = lexer_init_rule("operators", 'o', 1, operators_types, &cb_operators);
+    lexer_add_rule_to_syntax(syntax, operators);
+
+    int number_of_days_types[] = {INT};
+    Rule *number_of_days = lexer_init_rule("number-of-days", 'n', 1, number_of_days_types, &cb_number_of_days);
+    lexer_add_rule_to_syntax(syntax, number_of_days);
+
+    int queue_size_types[] = {INT};
+    Rule *queue_size = lexer_init_rule("queue-size", '\0', 1, queue_size_types, &cb_queue_size); // no abv for this one
+    lexer_add_rule_to_syntax(syntax, queue_size);
+
     int shift_types[] = {DURATION_UNIT, DURATION_UNIT};
     Rule *shift = lexer_init_rule("shift", 's', 2, shift_types, &cb_shift);
     lexer_add_rule_to_syntax(syntax, shift);
@@ -95,14 +109,6 @@ Syntax* _parser_create_syntax() {
     int duration_types[] = {DURATION_UNIT, DURATION_UNIT};
     Rule *duration = lexer_init_rule("duration", 'd', 2, duration_types, &cb_duration);
     lexer_add_rule_to_syntax(syntax, duration);
-
-    int number_of_days_types[] = {INT};
-    Rule *number_of_days = lexer_init_rule("number-of-days", 'n', 1, number_of_days_types, &cb_number_of_days);
-    lexer_add_rule_to_syntax(syntax, number_of_days);
-
-    int operators_types[] = {INT};
-    Rule *operators = lexer_init_rule("operators", 'o', 1, operators_types, &cb_operators);
-    lexer_add_rule_to_syntax(syntax, operators);
 
     return syntax;
 

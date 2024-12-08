@@ -72,7 +72,7 @@ Rule *lexer_init_rule(char *full_name, char abv, int number_of_values, int value
     e->full_name = full_name;
     e->has_abv = abv == '\0' ? 0 : 1;
     
-    if (e->has_abv) e->abv = abv;
+    e->abv = abv;
     e->number_of_values = number_of_values;
     
     for (int i=0; i < number_of_values; i++) {
@@ -115,8 +115,8 @@ Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* rule_name) {
         if (strcmp(syntax->s[i]->full_name, rule_name) == 0) {
             return syntax->s[i];
         }
-
-        if (syntax->s[i]->has_abv == 0) continue;
+    
+        if ((syntax->s[i]->has_abv == 0) || (strlen(rule_name) != 1)) continue;
 
         if (syntax->s[i]->abv == rule_name[0]) return syntax->s[i];
     }

@@ -26,7 +26,6 @@ architecture:
 #include "sim/call.h"
 #include "sim/stats.h"
 
-#define SIZE_OF_CALL_QUEUE 1000
 #define TICKS_PER_DAY 60*60*24 // Number of seconds in a day
 
 #define OPERATOR_NUMBER_IS_NEGATIVE 501
@@ -142,7 +141,7 @@ SimResults *sim_start_simulation(Arguments *a) {
     results->has_stats = 1; //TODO: add argument to control this
     if (results->has_stats) results->stats = stats_create_stats(a->number_of_days);
 
-    Queue *call_queue = queue_init(SIZE_OF_CALL_QUEUE);
+    Queue *call_queue = queue_init(a->queue_size);
     Operator **operators = sim_create_n_operators(a->operators);
 
     int next_call_id = 1;
