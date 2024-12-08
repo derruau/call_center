@@ -52,11 +52,9 @@ typedef struct {
     int avg_daily_call_rate;
 
     //4th requirement
-    // Daily rate of handled and non-handled customer
-    // It's a list I think??
-    // Can be compted after simulation ran
-    float* handled_customer_rate;
-    float* non_handled_customer_rate;
+    // Daily rate of handled
+    // Can be computed after simulation ran
+    float handled_customer_rate;
 
     //5th requirement
     // Average response time

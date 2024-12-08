@@ -13,7 +13,9 @@
                 "-d",
                 "5s:5m",
                 "-l",
-                "0.01",
+                "0.1",
+                "-o",
+                "20",
                 "bruhmoment"
             ],
             "stopAtEntry": false,

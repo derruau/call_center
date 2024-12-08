@@ -26,7 +26,8 @@ architecture:
 #include "sim/call.h"
 #include "sim/stats.h"
 
-#define SIZE_OF_CALL_QUEUE 20
+#define SIZE_OF_CALL_QUEUE 1000
+#define TICKS_PER_DAY 60*60*24 // Number of seconds in a day
 
 #define OPERATOR_NUMBER_IS_NEGATIVE 501
 #define OPERATOR_ALREADY_OCCUPIED 502
@@ -77,7 +78,14 @@ void sim_operator_take_client(Operator *o, Call *c, int day_tick) {
     c->call_end = c->call_start + c->wait_time + c->call_duration;
 }
 
-int sim_update_operators(Operator** ol, Queue* call_queue, int number_of_operators, int day_tick) {
+int sim_update_operators(
+    Stats *s, 
+    UncomputedAverage *ua, 
+    Operator** ol, 
+    Queue* call_queue, 
+    int number_of_operators, 
+    int day_tick
+    ) {
     for (int i=0; i < number_of_operators; i++) {
         if (ol[i]->occupied == 0) {
             if (queue_is_empty(call_queue)) continue;
@@ -93,6 +101,8 @@ int sim_update_operators(Operator** ol, Queue* call_queue, int number_of_operato
 
         ol[i]->ends_in--;
     }
+
+    stats_update_queue_stats(s, call_queue, ua);
 }
 
 void sim_log_call(SimResults *results, Call *call) {
@@ -109,22 +119,29 @@ void sim_log_call(SimResults *results, Call *call) {
     results->calls_current_size++;
 }
 
+int sim_time_in_open_hours(int time, Arguments *a) {
+    return (time >= a->shift_opening) && (time <= a->shift_closing);
+}
+
 SimResults *sim_start_simulation(Arguments *a) {
     SimResults *results = malloc(sizeof(SimResults));
     results->calls_max_size = 1;
     results->calls_current_size = 0;
     results->calls = malloc(sizeof(Call*)*results->calls_max_size);
 
+    Stats *s = stats_create_stats(a->number_of_days);
+    results->stats = s;
+
+    // To compute the average call queue size in stats
+    UncomputedAverage *ua_call_queue_size = malloc(sizeof(UncomputedAverage));
+
     results->has_stats = 1; //TODO: add argument to control this
     if (results->has_stats) results->stats = stats_create_stats(a->number_of_days);
-
-    // Any time_t coming from Arguments is guaranteed to be in seconds
-    time_t day_duration = a->shift_closing - a->shift_opening;
 
     Queue *call_queue = queue_init(SIZE_OF_CALL_QUEUE);
     Operator **operators = sim_create_n_operators(a->operators);
 
-    int next_call_id = 0;
+    int next_call_id = 1;
     time_t next_call =  misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 1));
     // Here the times can be added because they're guaranteed to be in seconds.
     time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
@@ -134,42 +151,70 @@ SimResults *sim_start_simulation(Arguments *a) {
             0
         );
 
+    // TODO: refactor to make it easier to read.
     for (int day = 1; day <= a->number_of_days; day++) {
         int day_tick = 0;
-        while ((day_tick < day_duration) || !queue_is_empty(call_queue)) {
-            
-            //TODO: update stats if needed
+        for (int day_tick =0; day_tick < TICKS_PER_DAY; day_tick++) {
 
-            sim_update_operators(operators, call_queue, a->operators, day_tick);
+            // If the call center is open
+            if (sim_time_in_open_hours(day_tick, a) || !queue_is_empty(call_queue)) {
 
-            // Receiving next clients 
-            if (next_call > day_duration)  {
-                day_tick++;
+                sim_update_operators(results->stats, ua_call_queue_size, operators, call_queue, a->operators, day_tick);
+
+                // Next call is in closing hours 
+                if (!sim_time_in_open_hours(next_call, a))  {
+                    next_call_id++;
+                    next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
+                    time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
+                        misc_gen_uniform(
+                            a->min_call_duration,
+                            a->max_call_duration,
+                            0
+                        );
+                    continue;
+                }
+
+                if (day_tick == next_call) {
+                    Call *call = call_create_random(next_call_id, next_call, next_call_duration);
+                    if (queue_is_full(call_queue)) {
+                        // handled_customer_rate & non_handled_customer_rate are set by stats_compute_handle_custome_rate()printf(CALL_QUEUE_IS_FULL_MESSAGE);
+                        exit(CALL_QUEUE_IS_FULL);
+                    }
+                    queue_enqueue(call_queue, call);
+                    sim_log_call(results, call); // We only need to log accepted clients
+
+                    next_call_id++;
+                    next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
+                    time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
+                        misc_gen_uniform(
+                            a->min_call_duration,
+                            a->max_call_duration,
+                            0
+                        );
+                }
                 continue;
             }
+
+            // Here the call center is closed
+
+            // There is a call incoming --> it is rejected
             if (day_tick == next_call) {
-                Call *call = call_create_random(next_call_id, next_call, next_call_duration);
-                if (queue_is_full(call_queue)) {
-                    printf(CALL_QUEUE_IS_FULL_MESSAGE);
-                    exit(CALL_QUEUE_IS_FULL);
-                }
-                queue_enqueue(call_queue, call);
-                sim_log_call(results, call);
-                printf("Call_id: %i\n", next_call_id);
-
-                next_call_id++;
-                next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
-                time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
-                    misc_gen_uniform(
-                        a->min_call_duration,
-                        a->max_call_duration,
-                        0
-                    );
+                    next_call_id++;
+                    next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
+                    time_t next_call_duration = (time_t) (a->max_call_duration - a->min_call_duration) * 
+                        misc_gen_uniform(
+                            a->min_call_duration,
+                            a->max_call_duration,
+                            0
+                        );
             }
-
-            day_tick++;
         }
+        
+        stats_compute_real_closing_time(results->stats, day, day_tick);
+
     }
+
+    stats_compute_stats(results->stats, results->calls, ua_call_queue_size, results->calls_current_size, a->number_of_days*TICKS_PER_DAY);
 
     return results;
 }
