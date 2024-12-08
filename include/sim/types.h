@@ -24,7 +24,7 @@ typedef struct {
     void *q[];
 } Queue;
 
-//================ simulation.c types ================
+//================ stats.c types ================
 
 typedef struct {
     // 1st requirement
@@ -58,7 +58,15 @@ typedef struct {
     // last call for the day.
     // It's a list I think??
     time_t* daily_real_closing_time;
-} Stats;   
+} Stats;
+
+typedef struct {
+    int sum;
+    int count;
+} UncomputedAverage;
+
+//================ simulation.c types ================
+
 
 typedef struct {
     int has_stats;

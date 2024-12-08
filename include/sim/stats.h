@@ -5,4 +5,11 @@
 
 Stats *stats_create_stats(int number_of_days);
 
+UncomputedAverage *update_ua(UncomputedAverage *ua, int value);
+
+void stats_update_queue_stats(Stats *s, Queue *call_queue, UncomputedAverage *avg);
+
+void stats_compute_stats(Stats *s, Call **calls, int number_of_calls, int total_number_of_ticks);
+
+void stats_compute_real_closing_time(Stats *s, int day_number, int day_tick);
 #endif

@@ -64,20 +64,24 @@ Operator **sim_create_n_operators(int n) {
     return ol;
 }
 
-void sim_operator_take_client(Operator *o, Call *c) {
+void sim_operator_take_client(Operator *o, Call *c, int day_tick) {
     if (o->occupied > 0) {
         printf(OPERATOR_ALREADY_OCCUPIED_MESSAGE);
         exit(OPERATOR_ALREADY_OCCUPIED);
     }
     o->occupied = 1;
     o->ends_in = c->call_duration;
+
+    // Compute the call's missing infos
+    c->wait_time = (time_t)day_tick - c->call_start;
+    c->call_end = c->call_start + c->wait_time + c->call_duration;
 }
 
-int sim_update_operators(Operator** ol, Queue* call_queue, int number_of_operators) {
+int sim_update_operators(Operator** ol, Queue* call_queue, int number_of_operators, int day_tick) {
     for (int i=0; i < number_of_operators; i++) {
         if (ol[i]->occupied == 0) {
             if (queue_is_empty(call_queue)) continue;
-            sim_operator_take_client(ol[i], (Call*)queue_dequeue(call_queue));
+            sim_operator_take_client(ol[i], (Call*)queue_dequeue(call_queue), day_tick);
             continue;
         }
 
@@ -136,7 +140,7 @@ SimResults *sim_start_simulation(Arguments *a) {
             
             //TODO: update stats if needed
 
-            sim_update_operators(operators, call_queue, a->operators);
+            sim_update_operators(operators, call_queue, a->operators, day_tick);
 
             // Receiving next clients 
             if (next_call > day_duration)  {
