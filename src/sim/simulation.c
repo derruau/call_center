@@ -177,7 +177,7 @@ SimResults *sim_start_simulation(Arguments *a) {
                 if (day_tick == next_call) {
                     Call *call = call_create_random(next_call_id, next_call, next_call_duration);
                     if (queue_is_full(call_queue)) {
-                        // handled_customer_rate & non_handled_customer_rate are set by stats_compute_handle_custome_rate()printf(CALL_QUEUE_IS_FULL_MESSAGE);
+                        printf(CALL_QUEUE_IS_FULL_MESSAGE);
                         exit(CALL_QUEUE_IS_FULL);
                     }
                     queue_enqueue(call_queue, call);
