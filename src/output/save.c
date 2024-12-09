@@ -124,7 +124,7 @@ void save_print_stats(Arguments *arguments, SimResults *results) {
     printf("  Maximum Queue Size: %i\n", results->stats->max_queue_size);
     printf("  Average Queue Size: %i_n\n", results->stats->avg_queue_size);
     printf("  Minimum Call Wait Time: %li\n", results->stats->min_call_wait_time);
-    printf("  Maximim Call Wait Time: %li\n", results->stats->max_call_wait_time);
+    printf("  Maximum Call Wait Time: %li\n", results->stats->max_call_wait_time);
     printf("  Average Call Wait Time: %li\n\n", results->stats->avg_call_wait_time);
     printf("  Average Daily Call Rate: %f\n\n", results->stats->avg_daily_call_rate);
     printf("  Handled Customer Rate: %f\n\n", results->stats->handled_customer_rate);
