@@ -8,7 +8,7 @@
 #include "sim/types.h"
 #include "sim/misc.h"
 
-Call *call_create_random(int id, time_t call_start, time_t call_end);
+Call *call_create_random(int id, time_t call_start, time_t call_duration, int day, int include_names, char *names_path);
 
 void call_free(Call *c);
 
@@ -18,7 +18,10 @@ Call **call_create_n_random(
     time_t shift_end, 
     float lamba,
     float minsrv,
-    float maxsrv
+    float maxsrv,
+    int day,
+    int include_names,
+    char *names_path
     );
 
 #endif

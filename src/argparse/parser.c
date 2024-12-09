@@ -39,15 +39,16 @@ Remarks:
 #define PARSER_ERROR 403
 #define TOKENIZER_ERROR_MESSAGE "[TOKENIZER ERROR] - Something unexpected went wrong!\n"
 
-//TODO: Setup good values for the defaults
-#define LAMBDA_DEFAULT 1.2
+#define LAMBDA_DEFAULT 0.05
 #define OPERATORS_DEFAULT 5
 #define NUMBER_OF_DAYS_DEFAULT 1
-#define MINSRV_DEFAULT 30 // 30 seconds
-#define MAXSRV_DEFAULT 600 // 10 minutes
+#define QUEUE_SIZE_DEFAULT 1000
+#define MIN_CALL_DURATION_DEFAULT 30 // 30 seconds
+#define MAX_CALL_DURATION_DEFAULT 300 // 5 minutes
 #define SHIFT_OPENING_DEFAULT 3600*6 // 6 AM
 #define SHIFT_CLOSING_DEFAULT 3600*18 // 6 PM
 #define PATH_DEFAULT "output.txt"
+#define NAMES_PATH_DEFAULT "data/mock_client_names.csv"
 
 // Creates an instance of the Argument class
 // with default parameters.
@@ -60,14 +61,19 @@ Arguments *parser_create_arguments() {
     a->lambda = LAMBDA_DEFAULT;
     a->operators = OPERATORS_DEFAULT;
     a->number_of_days = NUMBER_OF_DAYS_DEFAULT; 
-    a->min_call_duration = MINSRV_DEFAULT;
-    a->max_call_duration = MAXSRV_DEFAULT;
+    a->queue_size = QUEUE_SIZE_DEFAULT;
+    a->min_call_duration = MIN_CALL_DURATION_DEFAULT;
+    a->max_call_duration = MAX_CALL_DURATION_DEFAULT;
     a->shift_opening = SHIFT_OPENING_DEFAULT;
     a->shift_closing = SHIFT_CLOSING_DEFAULT;
+    a->wants_to_save = 0;
     a->path = &PATH_DEFAULT[0];
+    a->include_names = 0;
+    a->names_path = NAMES_PATH_DEFAULT;
 
     return a;
 }
+
 
 // Should not be called outside of this file.
 // This is where you add another Syntax rule.
@@ -88,6 +94,18 @@ Syntax* _parser_create_syntax() {
     Rule *lambda = lexer_init_rule("lambda", 'l', 1, lambda_types, &cb_lambda);
     lexer_add_rule_to_syntax(syntax, lambda);
 
+    int operators_types[] = {INT};
+    Rule *operators = lexer_init_rule("operators", 'o', 1, operators_types, &cb_operators);
+    lexer_add_rule_to_syntax(syntax, operators);
+
+    int number_of_days_types[] = {INT};
+    Rule *number_of_days = lexer_init_rule("number-of-days", 'n', 1, number_of_days_types, &cb_number_of_days);
+    lexer_add_rule_to_syntax(syntax, number_of_days);
+
+    int queue_size_types[] = {INT};
+    Rule *queue_size = lexer_init_rule("queue-size", '\0', 1, queue_size_types, &cb_queue_size); // no abv for this one
+    lexer_add_rule_to_syntax(syntax, queue_size);
+
     int shift_types[] = {DURATION_UNIT, DURATION_UNIT};
     Rule *shift = lexer_init_rule("shift", 's', 2, shift_types, &cb_shift);
     lexer_add_rule_to_syntax(syntax, shift);
@@ -96,17 +114,18 @@ Syntax* _parser_create_syntax() {
     Rule *duration = lexer_init_rule("duration", 'd', 2, duration_types, &cb_duration);
     lexer_add_rule_to_syntax(syntax, duration);
 
-    int number_of_days_types[] = {INT};
-    Rule *number_of_days = lexer_init_rule("number-of-days", 'n', 1, number_of_days_types, &cb_number_of_days);
-    lexer_add_rule_to_syntax(syntax, number_of_days);
+    int output_file_types[] = {STRING};
+    Rule *output_file = lexer_init_rule("output-file", '\0', 1, output_file_types, &cb_output_file);
+    lexer_add_rule_to_syntax(syntax, output_file);
 
-    int operators_types[] = {INT};
-    Rule *operators = lexer_init_rule("operators", 'o', 1, operators_types, &cb_operators);
-    lexer_add_rule_to_syntax(syntax, operators);
+    int include_names_types[] = {STRING};
+    Rule *include_names = lexer_init_rule("include-names", '\0', 1, include_names_types, &cb_include_names);
+    lexer_add_rule_to_syntax(syntax, include_names);
 
     return syntax;
 
 }
+
 
 // Parses the string arguments and puts them into an Arguments struct.
 int parser_parse_args(int argc, char *argv[], Arguments *arguments) {

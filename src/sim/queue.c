@@ -23,6 +23,8 @@ provided functions.
 
 #define QUEUE_IS_FULL 100
 #define QUEUE_IS_EMPTY 101
+#define QUEUE_IS_FULL_MESSAGE "[QUEUE ERROR] - Queue is full!\n"
+#define QUEUE_IS_EMPTY_MESSAGE "[QUEUE ERROR] - Queue is empty!\n"
 
 // Initializes an empty queue of size 'size_of_queue'
 Queue *queue_init(int size_of_queue) {
@@ -36,28 +38,38 @@ Queue *queue_init(int size_of_queue) {
     return q;
 }
 
+
 // Checks if a queue is empty
 bool queue_is_empty(Queue *q) {
     return (q->number_of_elements == 0);
 }
+
 
 // Checks if a queue is full
 bool queue_is_full(Queue *q) {
     return (q->number_of_elements == q->size);
 }
 
+
 // Enqueues a value in a queue
 void queue_enqueue(Queue *q, void *value) {
-    if (queue_is_full(q)) exit(QUEUE_IS_FULL);
+    if (queue_is_full(q)) {
+        printf(QUEUE_IS_FULL_MESSAGE);
+        exit(QUEUE_IS_FULL);
+    } 
 
     q->number_of_elements++;
     q->q[q->back] = value;
     q->back = (q->back + 1) % q->size;
 }
 
+
 // Dequeues a value from a queue
 void *queue_dequeue(Queue *q) {
-    if (queue_is_empty(q)) exit(QUEUE_IS_EMPTY);
+    if (queue_is_empty(q))  {
+        printf(QUEUE_IS_EMPTY_MESSAGE);
+        exit(QUEUE_IS_EMPTY);
+    }
 
     void *v = q->q[q->front];
 
@@ -67,10 +79,14 @@ void *queue_dequeue(Queue *q) {
     return v;
 }
 
+
 // Returns the value that is about to be dequeued without
 // actually dequeuing it.
 void *queue_peek(Queue *q) {
-    if (queue_is_empty(q)) exit(QUEUE_IS_EMPTY);
+    if (queue_is_empty(q)) {
+        printf(QUEUE_IS_EMPTY_MESSAGE);
+        exit(QUEUE_IS_EMPTY);
+    }
 
     return q->q[q->front];
 }
