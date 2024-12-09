@@ -78,7 +78,6 @@ void show_version() {
     printf("%s %s\n", PROGRAM_NAME, PROGRAM_VERSION);
 }
 
-//TODO: add the day to the output and format the time.
 int main(int argc, char *argv[]) {
 
     if (argc == 1)  {
