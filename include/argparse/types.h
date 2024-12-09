@@ -46,6 +46,7 @@ typedef struct s_arguments{
     float lambda;
     int operators;
     int number_of_days;
+    int queue_size;
 
     // Corresponds to the -d argument
     time_t min_call_duration;
@@ -55,7 +56,11 @@ typedef struct s_arguments{
     time_t shift_opening;
     time_t shift_closing;
 
+    int wants_to_save;
     char *path;
+
+    int include_names;
+    char *names_path;
 } Arguments;
 
 //================ lexer.c types ================

@@ -20,12 +20,10 @@ For definitions and explanations about Rules and Syntax, please see parser.c's h
 comment.
 
 The General Syntax that this parser matches is the following (in Regex notation):
-                            [Rule]* [STRING]
+                            [Rule]* <-- It's just a bunch of rules stitched together
 With a Rule being defined like this: 
                             [FLAG] [VALUE]*
 
-The [STRING] at the end of the Syntax is the path that the simulation result will be saved to.
-It is a special Syntax qwirk that isn't defined in a Rule but is hardcoded in lexer_get_arguments().
 
 Remarks:
     To be able to define this qwirk in a Rule, I would have to introduce some kind of position
@@ -45,7 +43,7 @@ Remarks:
 #define FLAG_NOT_IN_SYNTAX 422
 #define BAD_SYNTAX_ERROR 423
 #define CANNOT_ADD_SYNTAX_ERROR_MESSAGE "[LEXER ERROR] - Cannot add another expression to the syntax!\n"
-#define FLAG_NOT_IN_SYNTAX_MESSAGE "[LEXER ERROR] - Flag is not in the syntax!\n"
+#define FLAG_NOT_IN_SYNTAX_MESSAGE "[LEXER ERROR] - Flag '%s' is not in the syntax!\n"
 #define BAD_SYNTAX_ERROR_MESSAGE "[LEXER ERROR] - Syntax error!\n"
 
 #define SYNTAX_SIZE_INCREASE 5
@@ -64,6 +62,7 @@ Syntax *lexer_init_syntax() {
     return s;
 }
 
+
 // Returns a new Rule with the parameters you've passed it
 // See arg_types.c for explanations about what is a Rule
 Rule *lexer_init_rule(char *full_name, char abv, int number_of_values, int value_type[], lexer_callback cb) {
@@ -72,7 +71,7 @@ Rule *lexer_init_rule(char *full_name, char abv, int number_of_values, int value
     e->full_name = full_name;
     e->has_abv = abv == '\0' ? 0 : 1;
     
-    if (e->has_abv) e->abv = abv;
+    e->abv = abv;
     e->number_of_values = number_of_values;
     
     for (int i=0; i < number_of_values; i++) {
@@ -83,6 +82,7 @@ Rule *lexer_init_rule(char *full_name, char abv, int number_of_values, int value
 
     return e;
 }
+
 
 // Adds a Rule to the Syntax
 // See arg_types.c for explanations about what is a Rule / Syntax
@@ -115,15 +115,16 @@ Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* rule_name) {
         if (strcmp(syntax->s[i]->full_name, rule_name) == 0) {
             return syntax->s[i];
         }
-
-        if (syntax->s[i]->has_abv == 0) continue;
+    
+        if ((syntax->s[i]->has_abv == 0) || (strlen(rule_name) != 1)) continue;
 
         if (syntax->s[i]->abv == rule_name[0]) return syntax->s[i];
     }
 
-    printf(FLAG_NOT_IN_SYNTAX_MESSAGE);
+    printf(FLAG_NOT_IN_SYNTAX_MESSAGE, rule_name);
     exit(FLAG_NOT_IN_SYNTAX);
 }
+
 
 // The main Lexer function.
 // Checks the Tokens against the Syntax and fills up
@@ -131,17 +132,6 @@ Rule *_lexer_get_rule_from_flag_name(Syntax *syntax, char* rule_name) {
 int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int number_of_tokens) {
     int i=0;
     while (i < number_of_tokens) {
-
-        // Special case for the last token (i.e the path)
-        if (i == number_of_tokens - 1) {
-            if (tokens[i].type == VALUE) {
-                if (tokens[i].data.v->type == STRING) {
-                    arguments->path = (char*)tokens[i].data.v->data;
-                    return 0;
-                }
-            } 
-        }
-
         if (tokens[i].type == FLAG) {
             Rule *e = _lexer_get_rule_from_flag_name(syntax, tokens[i].data.f->name);
             Token **relevant_tokens = malloc(sizeof(Token*)*e->number_of_values);
@@ -170,5 +160,6 @@ int lexer_get_arguments(Syntax *syntax, Token *tokens, Arguments *arguments, int
         printf(BAD_SYNTAX_ERROR_MESSAGE);
         exit(BAD_SYNTAX_ERROR);
     }
-}
 
+    return 0;
+}

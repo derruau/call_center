@@ -13,6 +13,7 @@ typedef struct call {
     int id;
     char *tel;
     char *client_name;
+    int day; // The day of the simulation
     time_t call_start;
     time_t wait_time;
     time_t call_end;
@@ -69,6 +70,7 @@ typedef struct {
     time_t* daily_real_closing_time;
 } Stats;
 
+
 typedef struct {
     int sum;
     int count;
@@ -84,6 +86,7 @@ typedef struct {
     int calls_current_size;
     int calls_max_size;
 } SimResults;
+
 
 typedef struct {
     int occupied;

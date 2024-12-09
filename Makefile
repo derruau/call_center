@@ -1,4 +1,4 @@
-TARGET_EXEC := queue_project
+TARGET_EXEC := call_center
 
 BUILD_DIR := ./build
 SRC_DIR := ./src

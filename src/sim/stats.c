@@ -2,11 +2,9 @@
 ========================================== STATS.C ==========================================
 This file's role is compute all the stats associated with the simulation
 
-It's main function (stats_update_stats) is called at every tick in the simulation. We need
-to take this into account in the code.
+TODO: Add documentation
 
-This program needs to compte several averages, but 
-
+WARNING: This code is really ugly but I don't have the time to do better
 ========================================== STATS.C ==========================================
 */
 
@@ -35,12 +33,14 @@ Stats *stats_create_stats(int number_of_days) {
     return s;
 }
 
+
 UncomputedAverage *update_ua(UncomputedAverage *ua, int value) {
     ua->sum += value;
     ua->count++;
 
     return ua;
 }
+
 
 void stats_update_queue_stats(Stats *s, Queue *call_queue, UncomputedAverage *avg) {
 
@@ -54,6 +54,7 @@ void stats_update_queue_stats(Stats *s, Queue *call_queue, UncomputedAverage *av
 
     update_ua(avg, call_queue->number_of_elements);
 }
+
 
 void stats_compute_stats(Stats *s, Call **calls, UncomputedAverage *avg_call_queue_size, int number_of_calls, int total_number_of_ticks) {
     time_t min_call_wait_time = calls[0]->wait_time;
@@ -98,6 +99,7 @@ void stats_compute_stats(Stats *s, Call **calls, UncomputedAverage *avg_call_que
 
     // daily_real_closing_time is set by stats_compute_real_closing_time()
 }
+
 
 void stats_compute_real_closing_time(Stats *s, int day_number, int day_tick) {
     s->daily_real_closing_time[day_number - 1] = day_tick;

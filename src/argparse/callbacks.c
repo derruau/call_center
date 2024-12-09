@@ -25,7 +25,6 @@ callbacks and how they integrate with the program.
 #define MONTH 'M'
 #define YEAR 'y'
 
-// TODO: find a better way to remove tm_gmtoff that is Windows-compatible!!
 // Should not be used outside of this file.
 // Converts DURATION_UNIT Token data to time_tZ
 time_t _cb_duration_unit_to_time(char* s) {
@@ -76,22 +75,42 @@ time_t _cb_duration_unit_to_time(char* s) {
     return result;
 }
 
+
 void cb_help(Arguments *arguments, Token **t) {
     arguments->help = 1;
 }
+
 
 void cb_version(Arguments *arguments, Token **t) {
     arguments->version = 1;
 }
 
+
 void cb_quiet(Arguments *arguments, Token **t) {
     arguments->quiet = 1;
 }
+
 
 void cb_lambda(Arguments *arguments, Token **t) {
     if (t[0]->data.v->type == INT) arguments->lambda = *(int*) t[0]->data.v->data;
     else arguments->lambda = *(float*)t[0]->data.v->data;
 }
+
+
+void cb_operators(Arguments *arguments, Token **t) {
+    arguments->operators = *(int*)t[0]->data.v->data;
+}
+
+
+void cb_number_of_days(Arguments *arguments, Token **t) {
+    arguments->number_of_days = *(int*)t[0]->data.v->data;
+}
+
+
+void cb_queue_size(Arguments *arguments, Token **t) {
+    arguments->queue_size = *(int*)t[0]->data.v->data;
+}
+
 
 void cb_shift(Arguments *arguments, Token **t) {
     char *_otmp = (char*)t[0]->data.v->data;
@@ -102,6 +121,7 @@ void cb_shift(Arguments *arguments, Token **t) {
     arguments->shift_closing = _cb_duration_unit_to_time(_ctmp);
 }
 
+
 void cb_duration(Arguments *arguments, Token **t) {
     char *minsrv = (char*)t[0]->data.v->data;
     arguments->min_call_duration = _cb_duration_unit_to_time(minsrv);
@@ -111,10 +131,13 @@ void cb_duration(Arguments *arguments, Token **t) {
     arguments->max_call_duration = _cb_duration_unit_to_time(maxsrv);
 }
 
-void cb_number_of_days(Arguments *arguments, Token **t) {
-    arguments->number_of_days = *(int*)t[0]->data.v->data;
+
+void cb_output_file(Arguments *arguments, Token **t) {
+    arguments->wants_to_save = 1;
+    arguments->path = (char*)t[0]->data.v->data;
 }
 
-void cb_operators(Arguments *arguments, Token **t) {
-    arguments->operators = *(int*)t[0]->data.v->data;
+void cb_include_names(Arguments *arguments, Token **t) {
+    arguments->include_names = 1;
+    arguments->names_path = (char*)t[0]->data.v->data;
 }
