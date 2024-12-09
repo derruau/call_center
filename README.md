@@ -77,12 +77,6 @@ Duration Format:
 - Each function is prefixed with the name of the file/struct it's operating on. For example if I want to make the function that dequeues a value for a queue data structure, I name the function 'queue_dequeue'.
 - Each file has ONE and only ONE purpose. If I need two different 'components', I put them in different files.
 
-## Important
-It is **extremely important** that you only **seed once per execution of the program**!
-
-If you do not **seed once per execution of the program** I will personnally hunt you down and make you write a personnal letter of apology to the person who had to debug the abomination that **YOU** created!
-
-More seriously: when generating an array of random values, seeding more than one time by doing ``srand(time(NULL));`` will make the same data over and over again because the ``time`` function returns the time in seconds and the program obiously takes a lot less than one second to execute!! SO BY SEEDING MORE THAN ONCE YOU EFFECTIVELY RESET THE RANDOM NUMBER GENERATOR EVERY TIME YOU GENERATE DATA AHHHHHH WHY DID I MAKE THIS MISTAKE AND WASTE SO MUCH TIME AAAAHAHHH!!!!!!
 
 # Error Codes
 
@@ -91,13 +85,19 @@ If the program is well made, you shouldn't encounter them, however in case you d
 An error code is a three letter number XYZ. the X number identifies which source file the error comes from and the YZ identifies the type of error in this file.
 
 Here's a table of all the file identifiers:
-|    0XX    |     1XX    |     2XX    |    3XX   |        4XX       | 5XX | 6XX | 7XX | 8XX | 9XX |
-|:---------:|:----------:|:----------:|:--------:|:----------------:|:---:|:---:|:---:|:---:|:---:|
-|   main.c  |   queue.c  |   stack.c  | helper.c | argument parsing |     |     |     |     |     | 
+|  0XX   |   1XX   |   2XX   |   3XX  |        4XX       |      5XX     |   6XX  | 7XX | 8XX | 9XX |
+|:------:|:-------:|:-------:|:------:|:----------------:|:------------:|:------:|:---:|:---:|:---:|
+| main.c | queue.c | stack.c | misc.c | argument parsing | simulation.c | save.c |  /  |  /  |  /  | 
 
-# Problems
+# Architectural choices
 
-Right now we haven't found a bug in the Linux version of the program,
-however the Windows version seems to be unable to parse a DURATION token.
+This program is divided into 3 sections:
+- argparse: which parses the program arguments into usable data for the program.
+- sim: which actually performs the simulation.
+- output: which saves the result to a file & print the stats to the standard output.
 
-This issue has not yet been looked into.
+For more information on how the program works, please visit the following files's header comment:
+  - ``src/main.c``
+  - ``src/argparse/parser.c``
+  - ``src/sim/simulation.c``
+  - ``src/ouput/save.c``

@@ -154,14 +154,10 @@ SimResults *sim_start_simulation(Arguments *a) {
     Operator **operators = sim_create_n_operators(a->operators);
 
     int next_call_id = 1;
-    // time_t next_call =  misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 1));
-    // // Here the times can be added because they're guaranteed to be in seconds.
-    // time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
-
     // TODO: refactor to make it easier to read.
     // Note: We don't have the time to do this.
     for (int day = 1; day <= a->number_of_days; day++) {
-        int day_tick = 0;
+        int has_definitely_closed = 1;
         time_t next_call =  misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 1));
         // Here the times can be added because they're guaranteed to be in seconds.
         time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
@@ -173,6 +169,7 @@ SimResults *sim_start_simulation(Arguments *a) {
                 sim_update_operators(results->stats, ua_call_queue_size, operators, call_queue, a->operators, day_tick);
                 // Next call is in closing hours 
                 if (!sim_time_in_open_hours(next_call, a))  {
+                    has_definitely_closed = 0;
                     next_call_id++;
                     next_call += 1 + misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 0));
                     time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
@@ -195,6 +192,11 @@ SimResults *sim_start_simulation(Arguments *a) {
                 continue;
             }
 
+            if (has_definitely_closed == 0 && !sim_time_in_open_hours(day_tick, a) && queue_is_empty(call_queue)) {
+                has_definitely_closed = 1;
+                stats_compute_real_closing_time(results->stats, day, day_tick);
+            }
+
             // Here the call center is closed
 
             // There is a call incoming --> it is rejected
@@ -204,8 +206,6 @@ SimResults *sim_start_simulation(Arguments *a) {
                     time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
             }
         }
-        
-        stats_compute_real_closing_time(results->stats, day, day_tick);
 
     }
 

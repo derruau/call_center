@@ -1,11 +1,14 @@
 /* 
 ========================================== SAVE.C ==========================================
-This file's role is to save the result of the simulation to a file
+This file's role is to save the result of the simulation to a file.
 
-The results will be saved like so:
-
+The results will be saved in a text file and structured like so:
 CALL_ID     TEL     CLIENT_NAME     DAY     CALL_START      CALL_END    CALL_WAIT_TIME
 
+All the columns are aligned so that it's easier to read. The majority of the code in this file
+is there to help align the text.
+
+This file also prints the Stats to the standard output.
 
 WARNING: This code is really ugly but I don't have the time to do better
 ========================================== SAVE.C ==========================================
@@ -168,16 +171,16 @@ void save_print_stats(Arguments *arguments, SimResults *results) {
     printf("  Minimum Queue Size: %i\n", results->stats->min_queue_size);
     printf("  Maximum Queue Size: %i\n", results->stats->max_queue_size);
     printf("  Average Queue Size: %i\n\n", results->stats->avg_queue_size);
-    printf("  Minimum Call Wait Time: %li\n", results->stats->min_call_wait_time);
-    printf("  Maximim Call Wait Time: %li\n", results->stats->max_call_wait_time);
-    printf("  Average Call Wait Time: %li\n\n", results->stats->avg_call_wait_time);
-    printf("  Average Daily Call Rate: %f\n\n", results->stats->avg_daily_call_rate);
-    printf("  Handled Customer Rate: %f\n\n", results->stats->handled_customer_rate);
-    printf("  Average Response Time: %li\n\n", results->stats->avg_response_time);
+    printf("  Minimum Call Wait Time: %s\n", time_t_to_date(results->stats->min_call_wait_time));
+    printf("  Maximim Call Wait Time: %s\n", time_t_to_date(results->stats->max_call_wait_time));
+    printf("  Average Call Wait Time: %s\n\n", time_t_to_date(results->stats->avg_call_wait_time));
+    printf("  Average Daily Call Rate: %.3f\n\n", results->stats->avg_daily_call_rate);
+    printf("  Handled Customer Rate: %.3f\n\n", results->stats->handled_customer_rate);
+    printf("  Average Response Time: %s\n\n", time_t_to_date(results->stats->avg_response_time));
     printf("  Daily Closing Time: ");
 
     for (int i=0; i < arguments->number_of_days; i++) {
-        printf("%li ", results->stats->daily_real_closing_time[i]);
+        printf("%s | ", time_t_to_date(results->stats->daily_real_closing_time[i]));
     }
     
     printf("\n");
