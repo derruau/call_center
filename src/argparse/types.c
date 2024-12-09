@@ -120,6 +120,9 @@ typedef struct s_arguments{
 
     int wants_to_save;
     char *path;
+
+    int include_names;
+    char *names_path;
 } Arguments;
 
 //================ lexer.c types ================

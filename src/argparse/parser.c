@@ -48,6 +48,7 @@ Remarks:
 #define SHIFT_OPENING_DEFAULT 3600*6 // 6 AM
 #define SHIFT_CLOSING_DEFAULT 3600*18 // 6 PM
 #define PATH_DEFAULT "output.txt"
+#define NAMES_PATH_DEFAULT "data/mock_client_names.csv"
 
 // Creates an instance of the Argument class
 // with default parameters.
@@ -67,6 +68,8 @@ Arguments *parser_create_arguments() {
     a->shift_closing = SHIFT_CLOSING_DEFAULT;
     a->wants_to_save = 0;
     a->path = &PATH_DEFAULT[0];
+    a->include_names = 0;
+    a->names_path = NAMES_PATH_DEFAULT;
 
     return a;
 }
@@ -114,6 +117,10 @@ Syntax* _parser_create_syntax() {
     int output_file_types[] = {STRING};
     Rule *output_file = lexer_init_rule("output-file", '\0', 1, output_file_types, &cb_output_file);
     lexer_add_rule_to_syntax(syntax, output_file);
+
+    int include_names_types[] = {STRING};
+    Rule *include_names = lexer_init_rule("include-names", '\0', 1, include_names_types, &cb_include_names);
+    lexer_add_rule_to_syntax(syntax, include_names);
 
     return syntax;
 

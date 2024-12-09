@@ -154,14 +154,17 @@ SimResults *sim_start_simulation(Arguments *a) {
     Operator **operators = sim_create_n_operators(a->operators);
 
     int next_call_id = 1;
-    time_t next_call =  misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 1));
-    // Here the times can be added because they're guaranteed to be in seconds.
-    time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
+    // time_t next_call =  misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 1));
+    // // Here the times can be added because they're guaranteed to be in seconds.
+    // time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
 
     // TODO: refactor to make it easier to read.
     // Note: We don't have the time to do this.
     for (int day = 1; day <= a->number_of_days; day++) {
         int day_tick = 0;
+        time_t next_call =  misc_int_to_seconds((int) misc_gen_exponential(a->lambda, 1));
+        // Here the times can be added because they're guaranteed to be in seconds.
+        time_t next_call_duration = (time_t) misc_gen_uniform(a->min_call_duration, a->max_call_duration, 0);
         for (int day_tick =0; day_tick < TICKS_PER_DAY; day_tick++) {
 
             // If the call center is open
@@ -177,7 +180,7 @@ SimResults *sim_start_simulation(Arguments *a) {
                 }
 
                 if (day_tick == next_call) {
-                    Call *call = call_create_random(next_call_id, next_call, next_call_duration);
+                    Call *call = call_create_random(next_call_id, next_call, next_call_duration, day,a->include_names, a->names_path);
                     if (queue_is_full(call_queue)) {
                         printf(CALL_QUEUE_IS_FULL_MESSAGE, a->queue_size, a->queue_size*2);
                         exit(CALL_QUEUE_IS_FULL);

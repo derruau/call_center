@@ -20,9 +20,10 @@ You can create either one or multiples.
 #define MAX_CALL_TIME_SECONDS 6000 
 #define MAX_CALL_INTERVAL_SECONDS 60
 #define NAMES_PATH "data/mock_client_names.csv"
+#define DEFAULT_NAME "------"
 
 // Creates a random call
-Call *call_create_random(int id, time_t call_start, time_t call_duration) {
+Call *call_create_random(int id, time_t call_start, time_t call_duration, int day, int include_names, char *names_path) {
 
     Call *c = malloc(sizeof(Call));
 
@@ -36,7 +37,13 @@ Call *call_create_random(int id, time_t call_start, time_t call_duration) {
     c->tel[10] = '\0';
 
     c->id = id;
-    char *c_name = misc_get_random_name_from_file(NAMES_PATH, c->client_name);
+    c->day = day;
+    char *c_name;
+    if (include_names == 1) {
+        c_name = misc_get_random_name_from_file(names_path, c->client_name);
+    } else {
+        c_name = DEFAULT_NAME;
+    }
     c->client_name = c_name;
     c->call_start = call_start;
     c->call_duration = call_duration;
@@ -54,7 +61,10 @@ Call **call_create_n_random(
     time_t shift_end, 
     float lamba,
     float minsrv,
-    float maxsrv
+    float maxsrv,
+    int day,
+    int include_names,
+    char *names_path
     ) {
     Call **calls = malloc(sizeof(Call*)*n);
 
@@ -65,7 +75,7 @@ Call **call_create_n_random(
 
         time_t call_start = misc_add_seconds(prev_call, call_start_delta);
 
-        calls[i] = call_create_random(i, call_start, call_duration);
+        calls[i] = call_create_random(i, call_start, call_duration, day, include_names, names_path);
 
         prev_call = call_start;
     }

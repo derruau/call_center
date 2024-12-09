@@ -4,7 +4,7 @@ This file's role is to save the result of the simulation to a file
 
 The results will be saved like so:
 
-CALL_ID     TEL     CLIENT_NAME     CALL_START      CALL_END    CALL_WAIT_TIME
+CALL_ID     TEL     CLIENT_NAME     DAY     CALL_START      CALL_END    CALL_WAIT_TIME
 
 
 WARNING: This code is really ugly but I don't have the time to do better
@@ -16,13 +16,28 @@ WARNING: This code is really ugly but I don't have the time to do better
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #define SEPARATOR_CONSTANT 2
 
 #define COULD_NOT_OPEN_SAVE_FILE 601
 #define NEGATIVE_SPACES 602
-#define COULD_NOT_OPEN_SAVE_FILE_MESSAGE "[SAVE ERROR] - Could not open the output file!\n"
+#define COULD_NOT_OPEN_SAVE_FILE_MESSAGE "[SAVE ERROR] - Could not open or create the output file!)\n"
 #define NEGATIVE_SPACES_MESSAGE "[SAVE ERROR] - Had to process a string of negative length!\n"
+
+char *time_t_to_date(time_t time) {
+    struct tm *t = gmtime(&time);
+    char *_tmp = asctime(t);
+
+    char *res = malloc(sizeof(char)*9);
+    for (int i=0; i < 8; i++) {
+        res[i] = _tmp[11 + i];
+    }
+    res[8] = '\0';
+
+    return res;
+} 
+
 
 char *int_to_spaces(int n) {
     if (n < 0) {
@@ -44,6 +59,8 @@ char *int_to_spaces(int n) {
 
 int save_get_number_of_digits(int n) {
     if (n < 0) return ceil(log10(-n)) + 1;
+    // Weird behaviour on those cases... might be log10 or ceil I don't know.
+    if ((n % 10 == 0) || (n == 1)) return ceil(log10(n + 1));
     return ceil(log10(n));
 }
 
@@ -58,29 +75,43 @@ void save_call(FILE *f, Call *c, int max_length[]) {
     int name_length = strlen(c->client_name);
     char *name_spaces = int_to_spaces(max_length[2] - name_length + SEPARATOR_CONSTANT);
 
+    int day_length = save_get_number_of_digits(c->day);
+    char *day_spaces = int_to_spaces(max_length[3] - day_length + SEPARATOR_CONSTANT);
+
+    char *start_str = time_t_to_date(c->call_start);
+    char *end_str = time_t_to_date(c->call_end);
+    char *wait_str = time_t_to_date(c->wait_time);
+
     int start_length = save_get_number_of_digits(c->call_start);
-    char *start_spaces = int_to_spaces(max_length[3] - start_length + SEPARATOR_CONSTANT);
+    char *start_spaces = int_to_spaces(max_length[4] - 8 + SEPARATOR_CONSTANT);
 
     int end_length = save_get_number_of_digits(c->call_end);
-    char *end_spaces = int_to_spaces(max_length[4] - end_length + SEPARATOR_CONSTANT);
+    char *end_spaces = int_to_spaces(max_length[5] - 8 + SEPARATOR_CONSTANT);
 
-    fprintf(f, "%i%s%s%s%s%s%li%s%li%s%li\n",
+    fprintf(f, "%i%s%s%s%s%s%i%s%s%s%s%s%s\n", // Absolutely incomprehensible :thumbsup:
     c->id,
     id_spaces,
     c->tel,
     tel_spaces,
     c->client_name,
     name_spaces,
-    c->call_start,
+    c->day,
+    day_spaces,
+    start_str,
     start_spaces,
-    c->call_end,
+    end_str,
     end_spaces,
-    c->wait_time
+    wait_str
     );
+
+    free(start_str);
+    free(end_str);
+    free(wait_str);
 
     free(id_spaces);
     free(tel_spaces);
     free(name_spaces);
+    free(day_spaces);
     free(start_spaces);
     free(end_spaces);
 }
@@ -95,7 +126,7 @@ int save_calls_to_file(Arguments *arguments, SimResults *results) {
     }
 
     // Max length of each categories to align the output.
-    int max_lengths[] = {7, 10, 11, 10, 8, 14};
+    int max_lengths[] = {7, 10, 11, 3, 10, 8, 14};
     for (int i=0; i< results->calls_current_size; i++) {
         int current_id_size = save_get_number_of_digits(results->calls[i]->id);
         if (current_id_size > max_lengths[0]) max_lengths[0] = current_id_size;
@@ -103,25 +134,21 @@ int save_calls_to_file(Arguments *arguments, SimResults *results) {
         size_t name_length = strlen(results->calls[i]->client_name);
         if (name_length > max_lengths[2]) max_lengths[2] = name_length;
 
-        int current_call_start_size = save_get_number_of_digits(results->calls[i]->call_start);
-        if (current_call_start_size > max_lengths[3]) max_lengths[3] = current_call_start_size;
-
-        int current_call_end_size = save_get_number_of_digits(results->calls[i]->call_end);
-        if (current_call_end_size > max_lengths[4]) max_lengths[4] = current_call_end_size;
-
-        int current_call_wait_size = save_get_number_of_digits(results->calls[i]->wait_time);
-        if (current_call_wait_size > max_lengths[4]) max_lengths[4] = current_call_wait_size;
+        int current_day_size = save_get_number_of_digits(results->calls[i]->day);
+        if (current_day_size > max_lengths[3]) max_lengths[3] = current_day_size;
     }
 
     char *id_spaces = int_to_spaces(max_lengths[0] - 7 + SEPARATOR_CONSTANT);
     char *tel_spaces = int_to_spaces(max_lengths[1] - 3 + SEPARATOR_CONSTANT);
     char *name_spaces = int_to_spaces(max_lengths[2] - 11 + SEPARATOR_CONSTANT);
-    char *start_spaces = int_to_spaces(max_lengths[3] - 10 + SEPARATOR_CONSTANT);
-    char *end_spaces = int_to_spaces(max_lengths[4] - 8 + SEPARATOR_CONSTANT);
-    fprintf(f, "CALL_ID%sTEL%sCLIENT_NAME%sCALL_START%sCALL_END%sCALL_WAIT_TIME\n",
+    char *day_spaces = int_to_spaces(max_lengths[3] - 3 + SEPARATOR_CONSTANT);
+    char *start_spaces = int_to_spaces(max_lengths[4] - 10 + SEPARATOR_CONSTANT);
+    char *end_spaces = int_to_spaces(max_lengths[5] - 8 + SEPARATOR_CONSTANT);
+    fprintf(f, "CALL_ID%sTEL%sCLIENT_NAME%sDAY%sCALL_START%sCALL_END%sCALL_WAIT_TIME\n",
     id_spaces,
     tel_spaces,
     name_spaces,
+    day_spaces,
     start_spaces,
     end_spaces
     );

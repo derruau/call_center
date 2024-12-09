@@ -13,6 +13,7 @@ typedef struct call {
     int id;
     char *tel;
     char *client_name;
+    int day; // The day of the simulation
     time_t call_start;
     time_t wait_time;
     time_t call_end;

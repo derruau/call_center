@@ -136,3 +136,8 @@ void cb_output_file(Arguments *arguments, Token **t) {
     arguments->wants_to_save = 1;
     arguments->path = (char*)t[0]->data.v->data;
 }
+
+void cb_include_names(Arguments *arguments, Token **t) {
+    arguments->include_names = 1;
+    arguments->names_path = (char*)t[0]->data.v->data;
+}

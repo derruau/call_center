@@ -50,9 +50,12 @@ void show_help() {
     "  -o --operators       Number of operators in the call center. [DEFAULT:]\n"
     "  --queue-size         Sets the call queue size to a specific value. Useful\n"
     "                       when the simulation tells you that there is an overflow.\n"
-    "                       [DEFAULT: 1000]"
+    "                       [DEFAULT: 1000]\n"
     "  --output-file        Saves the generated calls to a file. If this flag is not\n"
     "                       present, the calls won't be saved anywhere!"
+    "  --include-names      You can specify a csv file formatted like this:\n"
+    "                       '[SURNAME],[NAME]' on each line to include random names\n"
+    "                       from this file as the client's names"
     "\n"
     "Duration Format:\n"
     "  The duration format encodes a start and end time like so:\n"
@@ -75,8 +78,7 @@ void show_version() {
     printf("%s %s\n", PROGRAM_NAME, PROGRAM_VERSION);
 }
 
-//TODO: add a client_names option
-//TODO: add the day to the output
+//TODO: add the day to the output and format the time.
 int main(int argc, char *argv[]) {
 
     if (argc == 1)  {
