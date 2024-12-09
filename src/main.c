@@ -52,7 +52,7 @@ void show_help() {
     "                       when the simulation tells you that there is an overflow.\n"
     "                       [DEFAULT: 1000]\n"
     "  --output-file        Saves the generated calls to a file. If this flag is not\n"
-    "                       present, the calls won't be saved anywhere!"
+    "                       present, the calls won't be saved anywhere!\nmake"
     "  --include-names      You can specify a csv file formatted like this:\n"
     "                       '[SURNAME],[NAME]' on each line to include random names\n"
     "                       from this file as the client's names"
