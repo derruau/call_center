@@ -20,16 +20,17 @@ int main(int argc, char *argv[]) {
     int arg_parsing_error = args_handle(argc, argv, a);
 
 
+
     helper_print_arguments(a);
 
     Call **c;
-    c=call_create_n_random(10, a->shift_opening, a->shift_closing, a->lambda, a->minsrv, a->maxsrv);
-
+    c=call_create_n_random(2, a->shift_opening, a->shift_closing, a->lambda, a->minsrv, a->maxsrv);
+    	
     //for (int i=0; i<10; i++) {
     //    helper_print_call(c[i]);
     //}
 
-    Queue *q = queue_init(3);
+    Queue *q = queue_init(2); 	
     time_t begin, end;
     time(&begin);
     end=begin+60*30;
@@ -37,6 +38,9 @@ int main(int argc, char *argv[]) {
     int v2 = 2;
     int v3 = 3;
     int v4 = 4;
-    simulation_register(c,  10);
+    simulation_queue(q, c, 2);
+    simulation_running(q, 2, c);
+    simulation_register(c,  2);
+    simulation_stat(c, 2);
 
 }

@@ -50,7 +50,7 @@ void helper_print_int_queue(Queue *q) {
 
 
 float helper_gen_poisson(float lambda, bool seed) {
-   // if (seed) srand(time(NULL));
+    if (seed) srand(time(NULL));
 
     float u = (rand() % POISSON_MAX) / POISSON_MAX;
 
@@ -58,11 +58,16 @@ float helper_gen_poisson(float lambda, bool seed) {
 } 
 
 float helper_gen_uniform(float min, float max, bool seed) {
-    //if (seed) srand(time(NULL));
+    if (seed) 
+    {srand(time(NULL));
+    }
+    
+    float i= min+ (max-min)*((float) rand()/RAND_MAX);
+    	
+    return i;	
+    /*int i = (int)(max - min);
 
-    int i = (int)(max - min);
-
-    return (rand() % i) / i;
+    return (rand() % i) / i;*/
 }
 
 time_t helper_add_seconds(time_t t1, int t2) {

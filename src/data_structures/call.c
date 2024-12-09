@@ -5,7 +5,7 @@
 
 #define ZERO_ASCII 48
 #define MAX_WAIT_TIME_SECONDS 300
-#define MAX_CALL_TIME_SECONDS 6000 
+#define MAX_CALL_TIME_SECONDS 600
 #define MAX_CALL_INTERVAL_SECONDS 60
 #define NAMES_PATH "data/mock_client_names.csv"
 
@@ -39,7 +39,7 @@ Call *call_create_random(int id, time_t call_start, time_t call_end) {
 
     c->id = id;
     c->client_name = helper_get_random_name_from_file(NAMES_PATH);
-    c->wait_time = -1; // Calculated at runtime
+    c->wait_time = 0; // Calculated at runtime
     c->call_start = call_start;
     c->call_end = call_end;
 
@@ -65,12 +65,13 @@ Call **call_create_n_random(
     time_t prev_call = shift_start;
     for (int i=0; i< n; i++) {
         int call_start_delta = (int)MAX_CALL_INTERVAL_SECONDS*helper_gen_poisson(lamba, i==0);
-        int call_end_delta = (int)MAX_CALL_TIME_SECONDS*helper_gen_uniform(minsrv, maxsrv, false);
-
+        //printf("%d", call_start_delta);
+        int call_end_delta = (int)MAX_CALL_TIME_SECONDS*helper_gen_uniform(minsrv, maxsrv, true);
+	//printf("%d  ", call_end_delta);
         time_t call_start = helper_add_seconds(prev_call, call_start_delta);
-        printf("%s\n", ctime(&call_start)); 
+        printf("%s  ", ctime(&call_start)); 
         time_t call_end = helper_add_seconds(call_start, call_end_delta);
-	printf("%s  ", ctime(&call_start)); 
+	printf("%s  ", ctime(&call_end)); 
 	printf("\n");
         calls[i] = call_create_random(i, call_start, call_end);
 
